@@ -182,17 +182,45 @@ namespace Polygon
 
         private void canvas_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            switch(e.Button)
+            switch(workType)
             {
-                case MouseButtons.Left:
-                    InsertNewVertex(e);
+                case WorkType.Edit:
+                    switch (e.Button)
+                    {
+                        case MouseButtons.Left:
+                            InsertNewVertex(e);
+                            break;
+                        case MouseButtons.Right:
+                            DeleteVertex(e);
+                            break;
+                    }
                     break;
-                case MouseButtons.Right:
-                    DeleteVertex(e);
+                case WorkType.Relations:
+                    switch (e.Button)
+                    {
+                        case MouseButtons.Left:
+                            InsertSizeRelation(e);
+                            break;
+                    }
                     break;
             }
+            
         }
 
+        private void InsertSizeRelation(MouseEventArgs e)
+        {
+            foreach (var polygon in polygons)
+            {
+                var edge = polygon.CheckEdge(e.Location);
+                if (edge == null)
+                    continue;
+                Relation temp = new Relation(edge.U, edge.V, RelationType.Size);
+                edge.U.AddRelation(temp, true);
+                edge.V.AddRelation(temp, false);
+                Redraw();
+                return;
+            }
+        }
         private void InsertNewVertex(MouseEventArgs e)
         {
             foreach (var polygon in polygons)
@@ -219,9 +247,5 @@ namespace Polygon
             }
         }
 
-        private void radioButtonRelations_CheckedChanged_1(object sender, EventArgs e)
-        {
-
-        }
     }
 }

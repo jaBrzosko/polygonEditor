@@ -19,8 +19,8 @@ namespace Polygon
 
         public void Move(double dx, double dy)
         {
-            U.Move(dx, dy);
-            V.Move(dx, dy);
+            U.MoveForced(dx, dy);
+            V.MoveForced(dx, dy);
         }
     }
 }

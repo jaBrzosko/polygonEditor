@@ -121,7 +121,7 @@
             this.radioButtonRelations.TabStop = true;
             this.radioButtonRelations.Text = "Relations";
             this.radioButtonRelations.UseVisualStyleBackColor = true;
-            this.radioButtonRelations.CheckedChanged += new System.EventHandler(this.radioButtonRelations_CheckedChanged_1);
+            this.radioButtonRelations.CheckedChanged += new System.EventHandler(this.radioButtonRelations_CheckedChanged);
             // 
             // Form1
             // 

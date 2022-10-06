@@ -157,7 +157,7 @@ namespace Polygon
         {
             foreach(var v in vertices)
             {
-                v.Move(dx, dy);
+                v.MoveForced(dx, dy);
             }
         }
 
