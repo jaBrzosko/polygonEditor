@@ -12,7 +12,6 @@ namespace Polygon
         private IMovable? movable;
         private Point? LastPosition;
         private Edge? firstEdge;
-        private Relation relation;
         private bool drawBresenham;
 
         private readonly Color backgroundColor = Color.White;
@@ -233,11 +232,30 @@ namespace Polygon
                 edge.U.AddRelation(rel);
                 edge.V.AddRelation(rel);
             }
+            Redraw();
         }
 
         private void AddParallelRelation(MouseEventArgs e)
         {
-            //TODO: Implement
+            foreach (var polygon in polygons)
+            {
+                var edge = polygon.CheckEdge(e.Location);
+                if (edge == null)
+                    continue;
+                if(firstEdge == null)
+                {
+                    firstEdge = edge;
+                    return;
+                }
+                ParallelRelation parallelRelation = new ParallelRelation(firstEdge, edge);
+                parallelRelation.InitRelation();
+                firstEdge.U.AddRelation(parallelRelation);
+                firstEdge.V.AddRelation(parallelRelation);
+                edge.U.AddRelation(parallelRelation);
+                edge.V.AddRelation(parallelRelation);
+                firstEdge = null;
+            }
+            Redraw();
         }
 
         private void InsertNewVertex(MouseEventArgs e)
