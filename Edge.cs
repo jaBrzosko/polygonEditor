@@ -19,8 +19,16 @@ namespace Polygon
 
         public void Move(double dx, double dy)
         {
-            U.Move(dx, dy);
-            V.Move(dx, dy);
+            //U.Move(dx, dy);
+            //V.Move(dx, dy);
+            // In the beggining edge was moved as two vertices. Finally it's done via proxy thorugh one of them
+            // It let's us properly apply relations without double moving
+            U.MoveByEdge(dx, dy, V);
+        }
+
+        public void Shrink(Vertex u, double length)
+        {
+            //TODO: Implement
         }
     }
 }

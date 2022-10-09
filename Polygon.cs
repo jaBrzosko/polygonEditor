@@ -128,19 +128,26 @@ namespace Polygon
             return CheckCollision(x, y, vertices.First());
         }
 
-        public void DrawPolygon(Graphics g, SolidBrush brush, Pen pen, int radius)
+        public void DrawPolygon(Graphics g, SolidBrush brush, Pen pen, int radius, bool drawBersenham, Bitmap image)
         {
             Point prev = vertices.Last().GetPoint();
             foreach(Vertex v in vertices)
             {
                 Point point = v.GetPoint();
                 g.FillEllipse(brush, point.X - radius, point.Y - radius, 2 * radius, 2 * radius);
-                    g.DrawLine(pen, point.X, point.Y, prev.X, prev.Y);
+                if (drawBersenham)
+                {
+                    LineDrawer.DrawBersenhamLine(image, prev, point);
+                }
+                else
+                {
+                    LineDrawer.DrawLine(g, pen, point, prev);
+                }
                 prev = point;
             }
         }
 
-        public void DrawPolygonInCreation(Graphics g, SolidBrush brush, Pen pen, int radius)
+        public void DrawPolygonInCreation(Graphics g, SolidBrush brush, Pen pen, int radius, bool drawBersenham, Bitmap image)
         {
             Point prev = vertices.First().GetPoint();
             g.FillEllipse(brush, prev.X - radius, prev.Y - radius, 2 * radius, 2 * radius);
@@ -148,7 +155,14 @@ namespace Polygon
             {
                 Point point = v.GetPoint();
                 g.FillEllipse(brush, point.X - radius, point.Y - radius, 2 * radius, 2 * radius);
-                g.DrawLine(pen, point.X, point.Y, prev.X, prev.Y);
+                if(drawBersenham)
+                {
+                    LineDrawer.DrawBersenhamLine(image, prev, point);
+                }
+                else
+                {
+                    LineDrawer.DrawLine(g, pen, point, prev);
+                }
                 prev = point;
             }
         }
@@ -157,7 +171,7 @@ namespace Polygon
         {
             foreach(var v in vertices)
             {
-                v.Move(dx, dy);
+                v.Move(dx, dy, true);
             }
         }
 

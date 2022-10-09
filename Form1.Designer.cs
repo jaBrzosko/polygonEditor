@@ -30,13 +30,17 @@
         {
             this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.radioButtonRelations = new System.Windows.Forms.RadioButton();
             this.radioButtonEdit = new System.Windows.Forms.RadioButton();
             this.radioButtonCreate = new System.Windows.Forms.RadioButton();
             this.canvas = new System.Windows.Forms.PictureBox();
-            this.radioButtonRelations = new System.Windows.Forms.RadioButton();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.radioButton2 = new System.Windows.Forms.RadioButton();
+            this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.tableLayoutPanel.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel
@@ -69,6 +73,18 @@
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Mode";
+            // 
+            // radioButtonRelations
+            // 
+            this.radioButtonRelations.AutoSize = true;
+            this.radioButtonRelations.Location = new System.Drawing.Point(15, 72);
+            this.radioButtonRelations.Name = "radioButtonRelations";
+            this.radioButtonRelations.Size = new System.Drawing.Size(73, 19);
+            this.radioButtonRelations.TabIndex = 2;
+            this.radioButtonRelations.TabStop = true;
+            this.radioButtonRelations.Text = "Relations";
+            this.radioButtonRelations.UseVisualStyleBackColor = true;
+            this.radioButtonRelations.CheckedChanged += new System.EventHandler(this.radioButtonRelations_CheckedChanged);
             // 
             // radioButtonEdit
             // 
@@ -111,23 +127,47 @@
             this.canvas.MouseMove += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseMove);
             this.canvas.MouseUp += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseUp);
             // 
-            // radioButtonRelations
+            // groupBox2
             // 
-            this.radioButtonRelations.AutoSize = true;
-            this.radioButtonRelations.Location = new System.Drawing.Point(15, 72);
-            this.radioButtonRelations.Name = "radioButtonRelations";
-            this.radioButtonRelations.Size = new System.Drawing.Size(73, 19);
-            this.radioButtonRelations.TabIndex = 2;
-            this.radioButtonRelations.TabStop = true;
-            this.radioButtonRelations.Text = "Relations";
-            this.radioButtonRelations.UseVisualStyleBackColor = true;
-            this.radioButtonRelations.CheckedChanged += new System.EventHandler(this.radioButtonRelations_CheckedChanged_1);
+            this.groupBox2.Controls.Add(this.radioButton2);
+            this.groupBox2.Controls.Add(this.radioButton1);
+            this.groupBox2.Location = new System.Drawing.Point(13, 135);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(118, 72);
+            this.groupBox2.TabIndex = 2;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Line Drawing";
+            // 
+            // radioButton2
+            // 
+            this.radioButton2.AutoSize = true;
+            this.radioButton2.Location = new System.Drawing.Point(6, 47);
+            this.radioButton2.Name = "radioButton2";
+            this.radioButton2.Size = new System.Drawing.Size(84, 19);
+            this.radioButton2.TabIndex = 1;
+            this.radioButton2.TabStop = true;
+            this.radioButton2.Text = "Bresenham";
+            this.radioButton2.UseVisualStyleBackColor = true;
+            this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButtonLineBrensenham_CheckedChanged);
+            // 
+            // radioButton1
+            // 
+            this.radioButton1.AutoSize = true;
+            this.radioButton1.Location = new System.Drawing.Point(6, 22);
+            this.radioButton1.Name = "radioButton1";
+            this.radioButton1.Size = new System.Drawing.Size(61, 19);
+            this.radioButton1.TabIndex = 0;
+            this.radioButton1.TabStop = true;
+            this.radioButton1.Text = "Library";
+            this.radioButton1.UseVisualStyleBackColor = true;
+            this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButtonLineLibrary_CheckedChanged);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.tableLayoutPanel);
             this.Name = "Form1";
             this.Text = "Form1";
@@ -136,6 +176,8 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).EndInit();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -148,5 +190,8 @@
         private RadioButton radioButtonCreate;
         private PictureBox canvas;
         private RadioButton radioButtonRelations;
+        private GroupBox groupBox2;
+        private RadioButton radioButton2;
+        private RadioButton radioButton1;
     }
 }

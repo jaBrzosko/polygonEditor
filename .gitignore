@@ -1,0 +1,15 @@
+﻿obj
+obj/*
+*/obj/*
+obj\*
+.\obj\
+
+bin
+bin/*
+*/bin/*
+bin\*
+
+.vs
+.vs/*
+*/.vs/*
+.vs\*

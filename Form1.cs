@@ -11,6 +11,9 @@ namespace Polygon
         private WorkType workType;
         private IMovable? movable;
         private Point? LastPosition;
+        private Edge? firstEdge;
+        private Relation relation;
+        private bool drawBresenham;
 
         private readonly Color backgroundColor = Color.White;
         private readonly Color drawColor = Color.Black;
@@ -23,6 +26,8 @@ namespace Polygon
             polygons = new List<Polygon>();
             background = new Bitmap(canvas.Width, canvas.Height);
             canvas.Image = background;
+            firstEdge = null;
+            drawBresenham = false;
             Redraw();
         }
 
@@ -77,15 +82,22 @@ namespace Polygon
 
             foreach (Polygon polygon in polygons)
             {
-                polygon.DrawPolygon(g, brush, pen, radius);
+                polygon.DrawPolygon(g, brush, pen, radius, drawBresenham, background);
             }
 
             if(creating != null)
             {
-                creating.DrawPolygonInCreation(g, brush, pen, radius);
+                creating.DrawPolygonInCreation(g, brush, pen, radius, drawBresenham, background);
                 if (e != null)
                 {
-                    g.DrawLine(pen, creating.LastVertex.GetPoint(), e.Location);
+                    if (drawBresenham)
+                    {
+                        LineDrawer.DrawBersenhamLine(background, creating.LastVertex.GetPoint(), e.Location);
+                    }
+                    else
+                    {
+                        LineDrawer.DrawLine(g, pen, creating.LastVertex.GetPoint(), e.Location);
+                    }
                 }
             }
 
@@ -182,15 +194,50 @@ namespace Polygon
 
         private void canvas_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            switch(e.Button)
+            switch(workType)
             {
-                case MouseButtons.Left:
-                    InsertNewVertex(e);
+                case WorkType.Edit:
+                    switch (e.Button)
+                    {
+                        case MouseButtons.Left:
+                            InsertNewVertex(e);
+                            break;
+                        case MouseButtons.Right:
+                            DeleteVertex(e);
+                            break;
+                    }
                     break;
-                case MouseButtons.Right:
-                    DeleteVertex(e);
+                case WorkType.Relations:
+                    switch(e.Button)
+                    {
+                        case MouseButtons.Left:
+                            AddSizeRelation(e);
+                            break;
+                        case MouseButtons.Right:
+                            AddParallelRelation(e);
+                            break;
+                    }
                     break;
             }
+
+        }
+
+        private void AddSizeRelation(MouseEventArgs e)
+        {
+            foreach(var polygon in polygons)
+            {
+                var edge = polygon.CheckEdge(e.Location);
+                if (edge == null)
+                    continue;
+                SizeRelation rel = new SizeRelation(edge);
+                edge.U.AddRelation(rel);
+                edge.V.AddRelation(rel);
+            }
+        }
+
+        private void AddParallelRelation(MouseEventArgs e)
+        {
+            //TODO: Implement
         }
 
         private void InsertNewVertex(MouseEventArgs e)
@@ -219,9 +266,16 @@ namespace Polygon
             }
         }
 
-        private void radioButtonRelations_CheckedChanged_1(object sender, EventArgs e)
+        private void radioButtonLineLibrary_CheckedChanged(object sender, EventArgs e)
         {
+            drawBresenham = false;
+            Redraw();
+        }
 
+        private void radioButtonLineBrensenham_CheckedChanged(object sender, EventArgs e)
+        {
+            drawBresenham = true;
+            Redraw();
         }
     }
 }

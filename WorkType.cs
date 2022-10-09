@@ -12,4 +12,10 @@ namespace Polygon
         Edit,
         Relations
     }
+
+    internal enum RelationType
+    {
+        Size,
+        Parallel
+    }
 }
