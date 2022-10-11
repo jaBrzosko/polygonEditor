@@ -15,18 +15,6 @@ namespace Polygon
         public ParallelRelation(Vertex u1, Vertex v1, Vertex u2, Vertex v2)
         {
             // probably have to implement some smart way to sort them
-            if(u1.X < v1.X)
-            {
-                var temp = v1;
-                v1 = u1;
-                u1 = temp;
-            }
-            if(u2.X < v2.X)
-            {
-                var temp = v2;
-                v2 = u2;
-                u2 = temp;
-            }
             this.u1 = u1;
             this.v1 = v1;
             this.u2 = u2;
@@ -56,13 +44,23 @@ namespace Polygon
         {
             if (destinationStayed.X == destinationToBeMoved.X && destinationToBeMoved.Y == destinationStayed.Y)
                 return;
-            double coof = GetDistance(destinationToBeMoved, destinationStayed) / GetDistance(sourceMoved, sourceStayed);
+
+            double nominator = GetDistanceSquared(destinationToBeMoved, destinationStayed);
+            double denominator = GetDistanceSquared(sourceMoved, sourceStayed);
+            if (denominator < 0.0001f)
+                return;
+            double coof = Math.Sqrt(nominator / denominator);
             destinationToBeMoved.Move(dx * coof, dy *coof);
+        }
+
+        private double GetDistanceSquared(Vertex u, Vertex v)
+        {
+            return (u.X - v.X) * (u.X - v.X) + (u.Y - v.Y) * (u.Y - v.Y);
         }
 
         private double GetDistance(Vertex u, Vertex v)
         {
-            return Math.Sqrt((u.X - v.X) * (u.X - v.X) + (u.Y - v.Y) * (u.Y - v.Y));
+            return Math.Sqrt(GetDistanceSquared(u, v));
         }
 
         public override bool EdgeSetCheck(Vertex u, Vertex v)
@@ -72,18 +70,46 @@ namespace Polygon
 
         public void InitRelation()
         {
+            // Maybe make a list and iterate over it?
+            List<((double dx, double dy) delta, Vertex which)> temp = new List<((double dx, double dy) delta, Vertex which)>();
+            temp.Add((PrecomputeCorrection(u1, v1, u2, v2), v2));
+            temp.Add((PrecomputeCorrection(u1, v1, v2, u2), u2));
+            temp.Add((PrecomputeCorrection(v1, u1, u2, v2), v2));
+            temp.Add((PrecomputeCorrection(v1, u1, v2, u2), u2));
+            temp.Add((PrecomputeCorrection(u2, v2, u1, v1), v1));
+            temp.Add((PrecomputeCorrection(u2, v2, v1, u1), u1));
+            temp.Add((PrecomputeCorrection(v2, u2, u1, v1), v1));
+            temp.Add((PrecomputeCorrection(v2, u2, v1, u1), u1));
+
+            double minDist = double.MaxValue;
+            ((double dx, double dy) delta, Vertex which) result = temp[0];
+            foreach(var it in temp)
+            {
+                var dist = it.delta.dx * it.delta.dx + it.delta.dy * it.delta.dy;
+                if(dist < minDist)
+                {
+                    minDist = dist;
+                    result = it;
+                }
+            }
+
+            result.which.Move(result.delta.dx, result.delta.dy);
+        }
+
+        public (double dx, double dy) PrecomputeCorrection(Vertex u1, Vertex v1, Vertex u2, Vertex v2)
+        {
             double dx = v1.X - u1.X;
             double dy = v1.Y - u1.Y;
 
-            double coof = GetDistance(u2, v2) / GetDistance(u1, v1);
+            double coof = Math.Sqrt(GetDistanceSquared(u2, v2) / GetDistanceSquared(u1, v1));
 
             double nx = u2.X + dx * coof;
             double ny = u2.Y + dy * coof;
 
-            double dnx = v2.X - nx;
-            double dny = v2.Y - ny;
+            double dnx = nx - v2.X;
+            double dny = ny - v2.Y;
 
-            v2.Move(-dnx, -dny);
+            return (dnx, dny);
         }
     }
 }

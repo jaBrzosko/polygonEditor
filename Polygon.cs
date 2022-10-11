@@ -8,7 +8,7 @@ namespace Polygon
 {
     internal class Polygon: IMovable
     {
-        private LinkedList<Vertex> vertices;
+        private LinkedList<Vertex> vertices; //probably change it to normal list - no real use in this form
         private readonly static double deltaE = 25; //squared
         private readonly static double deltaV = 25;
 
@@ -171,7 +171,7 @@ namespace Polygon
         {
             foreach(var v in vertices)
             {
-                v.Move(dx, dy, true);
+                v.MoveByPolygon(dx, dy);
             }
         }
 

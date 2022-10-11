@@ -14,7 +14,7 @@ namespace Polygon
         private Edge? firstEdge;
         private bool drawBresenham;
 
-        private readonly Color backgroundColor = Color.White;
+        private readonly Color backgroundColor = Color.Gray;
         private readonly Color drawColor = Color.Black;
         private readonly int radius = 4;
         public Form1()
@@ -122,6 +122,7 @@ namespace Polygon
             if (movable == null || LastPosition == null)
                 return;
 
+            // delta from last check
             movable.Move(e.X - LastPosition.Value.X, e.Y - LastPosition.Value.Y);
             Redraw();
             LastPosition = e.Location;

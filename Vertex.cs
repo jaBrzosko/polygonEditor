@@ -27,26 +27,26 @@ namespace Polygon
             return new Point((int)X, (int)Y);
         }
 
-        public void Move(double dx, double dy)
+
+        // if user is moving whole polygon there is no need to check relations
+        public void MoveByPolygon(double dx, double dy)
         {
-            Move(dx, dy, false);
+            X += dx;
+            Y += dy;
         }
 
-        public void Move(double dx, double dy, bool wasMovedViaPolygon)
+        public void Move(double dx, double dy)
         {
             if (wasMoved)
                 return;
             wasMoved = true;
             X += dx;
             Y += dy;
-            if (wasMovedViaPolygon)
-            {
-                wasMoved = false;
-                return;
-            }
 
             foreach (var rel in _relations.Where(x => !x.WasApplied))
             {
+                if (rel.WasApplied)
+                    continue;
                 rel.ApplyRelation(this, dx, dy);
             }
             wasMoved = false;
