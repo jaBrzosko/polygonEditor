@@ -42,15 +42,72 @@ namespace Polygon
 
         private void AdjustEdge(Vertex sourceMoved, Vertex sourceStayed, Vertex destinationToBeMoved, Vertex destinationStayed, double dx, double dy)
         {
-            if (destinationStayed.X == destinationToBeMoved.X && destinationToBeMoved.Y == destinationStayed.Y)
-                return;
+            var eq1 = SolveEquation(sourceMoved, sourceStayed);
+            var eq2 = SolveEquation(destinationToBeMoved, destinationStayed);
 
-            double nominator = GetDistanceSquared(destinationToBeMoved, destinationStayed);
-            double denominator = GetDistanceSquared(sourceMoved, sourceStayed);
-            if (denominator < 0.0001f)
-                return;
-            double coof = Math.Sqrt(nominator / denominator);
-            destinationToBeMoved.Move(dx * coof, dy *coof);
+            var neq = SolveForNewValues(eq1, eq2);
+
+            AdjustVertex(neq.A, neq.B, destinationToBeMoved, destinationStayed);
+
+
+            //if (destinationStayed.X == destinationToBeMoved.X && destinationToBeMoved.Y == destinationStayed.Y)
+            //    return;
+
+            //double nominator = GetDistanceSquared(destinationToBeMoved, destinationStayed);
+            //double denominator = GetDistanceSquared(sourceMoved, sourceStayed);
+            //if (denominator < 0.0001f)
+            //    return;
+            //double coof = Math.Sqrt(nominator / denominator);
+            //destinationToBeMoved.Move(dx * coof, dy *coof);
+        }
+
+        private (double A, double B) SolveEquation(Vertex u, Vertex v)
+        {
+            double A, B;
+            if(u.Y == v.Y)
+            {
+                A = 0;
+                B = 1;
+            }
+            else if (u.X == v.X)
+            {
+                A = 1;
+                B = 0;
+            }
+            else
+            {
+                // z kart maturalnych CKE, strona 7, "Równanie prostej, która przechodzi przez dwa dane punkty"
+                // https://cke.gov.pl/images/_EGZAMIN_MATURALNY_OD_2015/Informatory/2015/MATURA_2015_Wybrane_wzory_matematyczne.pdf
+                A = u.Y - v.Y;
+                B = v.X - u.X;
+            }
+
+            return (A, B);
+        }
+
+        private (double A, double B) SolveForNewValues((double A, double B) eq1, (double A, double B) eq2)
+        {
+            // also thanks to CKE
+            if (eq1.A == 0 || eq1.B == 0)
+                return (eq1.A, eq1.B);
+            return (eq1.A * eq2.B / eq1.B, eq2.B);
+        }
+
+        private void AdjustVertex(double A, double B, Vertex toBeMoved, Vertex stationary)
+        {
+            double dx = toBeMoved.X - stationary.X;
+            double dy = toBeMoved.Y - stationary.Y;
+
+            double denom = B * B + A * A;
+            double ab = A * B;
+
+            double nx = (B * B * dx - ab * dy) / denom;
+            double ny = (A * A * dy - ab * dx) / denom;
+
+            double dnx = nx - dx;
+            double dny = ny - dy;
+
+            toBeMoved.Move(dnx, dny);
         }
 
         private double GetDistanceSquared(Vertex u, Vertex v)
