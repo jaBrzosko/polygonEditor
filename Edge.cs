@@ -30,5 +30,17 @@ namespace Polygon
         {
             //TODO: Implement
         }
+
+        public override bool Equals(object? obj)
+        {
+            if(obj == null || obj.GetType() != typeof(Edge))
+            {
+                return false;
+            }
+
+            Edge e = (Edge)obj;
+
+            return (U  == e.U && V == e.V) || (U == e.V && V == e.U);
+        }
     }
 }

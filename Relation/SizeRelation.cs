@@ -34,5 +34,13 @@ namespace Polygon
         {
             return (u.Equals(U) && v.Equals(V)) || (u.Equals(V) && v.Equals(U));
         }
+
+        public override string GetIcon()
+        {
+            double dx = u.X - v.X;
+            double dy = u.Y - v.Y;
+            double length = Math.Sqrt(dx * dx + dy * dy);
+            return length.ToString("0.##");
+        }
     }
 }

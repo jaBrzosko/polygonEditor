@@ -131,9 +131,9 @@
             // 
             this.groupBox2.Controls.Add(this.radioButton2);
             this.groupBox2.Controls.Add(this.radioButton1);
-            this.groupBox2.Location = new System.Drawing.Point(13, 135);
+            this.groupBox2.Location = new System.Drawing.Point(13, 119);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(118, 72);
+            this.groupBox2.Size = new System.Drawing.Size(118, 71);
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Line Drawing";
@@ -145,7 +145,6 @@
             this.radioButton2.Name = "radioButton2";
             this.radioButton2.Size = new System.Drawing.Size(84, 19);
             this.radioButton2.TabIndex = 1;
-            this.radioButton2.TabStop = true;
             this.radioButton2.Text = "Bresenham";
             this.radioButton2.UseVisualStyleBackColor = true;
             this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButtonLineBrensenham_CheckedChanged);
@@ -153,6 +152,7 @@
             // radioButton1
             // 
             this.radioButton1.AutoSize = true;
+            this.radioButton1.Checked = true;
             this.radioButton1.Location = new System.Drawing.Point(6, 22);
             this.radioButton1.Name = "radioButton1";
             this.radioButton1.Size = new System.Drawing.Size(61, 19);
@@ -170,7 +170,7 @@
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.tableLayoutPanel);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Polygon Editor";
             this.SizeChanged += new System.EventHandler(this.Form1_SizeChanged);
             this.tableLayoutPanel.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);

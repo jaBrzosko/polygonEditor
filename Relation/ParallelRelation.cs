@@ -9,17 +9,20 @@ namespace Polygon
     internal class ParallelRelation : Relation
     {
         private Vertex u1, v1, u2, v2;
+        private int relationNumber;
 
-        public ParallelRelation(Edge e1, Edge e2) : this(e1.U, e1.V, e2.U, e2.V) { }
+        public ParallelRelation(Edge e1, Edge e2, int relationNumber = 0) : this(e1.U, e1.V, e2.U, e2.V, relationNumber) { }
 
-        public ParallelRelation(Vertex u1, Vertex v1, Vertex u2, Vertex v2)
+        public ParallelRelation(Vertex u1, Vertex v1, Vertex u2, Vertex v2, int relationNumber)
         {
             // probably have to implement some smart way to sort them
             this.u1 = u1;
             this.v1 = v1;
             this.u2 = u2;
             this.v2 = v2;
+            this.relationNumber = relationNumber;
         }
+        
         public override void ApplyRelation(Vertex u, double dx, double dy)
         {
             if(u.Equals(u1))
@@ -167,6 +170,11 @@ namespace Polygon
             double dny = ny - v2.Y;
 
             return (dnx, dny);
+        }
+
+        public override string GetIcon()
+        {
+            return "||  " + relationNumber.ToString();
         }
     }
 }

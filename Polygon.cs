@@ -191,12 +191,16 @@ namespace Polygon
             vertices.AddAfter(lln, new LinkedListNode<Vertex>(new Vertex(p.X, p.Y)));
         }
 
-        public void Delete(Vertex v)
+        public bool Delete(Vertex v)
         {
             if(vertices.Count > 3)
             {
                 vertices.Remove(v);
+                return false;
             }
+
+            vertices.Clear();
+            return true;
         }
     }
 }

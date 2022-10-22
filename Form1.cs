@@ -13,6 +13,7 @@ namespace Polygon
         private Point? LastPosition;
         private Edge? firstEdge;
         private bool drawBresenham;
+        private RelationCollection relations;
 
         private readonly Color backgroundColor = Color.Gray;
         private readonly Color drawColor = Color.Black;
@@ -27,6 +28,7 @@ namespace Polygon
             canvas.Image = background;
             firstEdge = null;
             drawBresenham = false;
+            relations = new RelationCollection();
             Redraw();
         }
 
@@ -99,6 +101,8 @@ namespace Polygon
                     }
                 }
             }
+
+            relations.DrawRelations(g);
 
             canvas.Refresh();
         }
@@ -229,9 +233,12 @@ namespace Polygon
                 var edge = polygon.CheckEdge(e.Location);
                 if (edge == null)
                     continue;
-                SizeRelation rel = new SizeRelation(edge);
-                edge.U.AddRelation(rel);
-                edge.V.AddRelation(rel);
+
+                relations.AddSizeRelation(edge);
+
+                //SizeRelation rel = new SizeRelation(edge);
+                //edge.U.AddRelation(rel);
+                //edge.V.AddRelation(rel);
             }
             Redraw();
         }
@@ -248,12 +255,16 @@ namespace Polygon
                     firstEdge = edge;
                     return;
                 }
-                ParallelRelation parallelRelation = new ParallelRelation(firstEdge, edge);
-                parallelRelation.InitRelation();
-                firstEdge.U.AddRelation(parallelRelation);
-                firstEdge.V.AddRelation(parallelRelation);
-                edge.U.AddRelation(parallelRelation);
-                edge.V.AddRelation(parallelRelation);
+
+                // dont allow relations that are neighbours
+                relations.AddParallelRelation(firstEdge, edge);
+
+                //ParallelRelation parallelRelation = new ParallelRelation(firstEdge, edge);
+                //parallelRelation.InitRelation();
+                //firstEdge.U.AddRelation(parallelRelation);
+                //firstEdge.V.AddRelation(parallelRelation);
+                //edge.U.AddRelation(parallelRelation);
+                //edge.V.AddRelation(parallelRelation);
                 firstEdge = null;
             }
             Redraw();
@@ -279,7 +290,11 @@ namespace Polygon
                 var v = polygon.CheckVertex(e.Location);
                 if (v == null)
                     continue;
-                polygon.Delete(v);
+                if(polygon.Delete(v))
+                {
+                    polygons.Remove(polygon);
+                }
+
                 Redraw();
                 return;
             }
