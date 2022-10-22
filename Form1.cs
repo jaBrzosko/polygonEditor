@@ -10,7 +10,9 @@ namespace Polygon
         private Bitmap background;
         private WorkType workType;
         private IMovable? movable;
+        private IMovable? clickable;
         private Point? LastPosition;
+        private Point? ContextMenuPosition;
         private Edge? firstEdge;
         private bool drawBresenham;
         private RelationCollection relations;
@@ -65,7 +67,7 @@ namespace Polygon
 
         private void EditMode(MouseEventArgs e)
         {
-            //implement drag - not used currently
+
         }
 
         private void Redraw()
@@ -204,10 +206,10 @@ namespace Polygon
                     switch (e.Button)
                     {
                         case MouseButtons.Left:
-                            InsertNewVertex(e);
+                            InsertNewVertex(e.Location);
                             break;
                         case MouseButtons.Right:
-                            DeleteVertex(e);
+                            DeleteVertex(e.Location);
                             break;
                     }
                     break;
@@ -215,10 +217,10 @@ namespace Polygon
                     switch(e.Button)
                     {
                         case MouseButtons.Left:
-                            AddSizeRelation(e);
+                            AddSizeRelation(e.Location);
                             break;
                         case MouseButtons.Right:
-                            AddParallelRelation(e);
+                            AddParallelRelation(e.Location);
                             break;
                     }
                     break;
@@ -226,11 +228,11 @@ namespace Polygon
 
         }
 
-        private void AddSizeRelation(MouseEventArgs e)
+        private void AddSizeRelation(Point p)
         {
             foreach(var polygon in polygons)
             {
-                var edge = polygon.CheckEdge(e.Location);
+                var edge = polygon.CheckEdge(p);
                 if (edge == null)
                     continue;
 
@@ -243,11 +245,11 @@ namespace Polygon
             Redraw();
         }
 
-        private void AddParallelRelation(MouseEventArgs e)
+        private void AddParallelRelation(Point p)
         {
             foreach (var polygon in polygons)
             {
-                var edge = polygon.CheckEdge(e.Location);
+                var edge = polygon.CheckEdge(p);
                 if (edge == null)
                     continue;
                 if(firstEdge == null)
@@ -256,7 +258,7 @@ namespace Polygon
                     return;
                 }
 
-                // dont allow relations that are neighbours
+                // TODO: dont allow relations that are neighbours
                 relations.AddParallelRelation(firstEdge, edge);
 
                 //ParallelRelation parallelRelation = new ParallelRelation(firstEdge, edge);
@@ -270,24 +272,24 @@ namespace Polygon
             Redraw();
         }
 
-        private void InsertNewVertex(MouseEventArgs e)
+        private void InsertNewVertex(Point p)
         {
             foreach (var polygon in polygons)
             {
-                var edge = polygon.CheckEdge(e.Location);
+                var edge = polygon.CheckEdge(p);
                 if (edge == null)
                     continue;
-                polygon.Insert(edge, e.Location);
+                polygon.Insert(edge, p);
                 Redraw();
                 return;
             }
         }
 
-        private void DeleteVertex(MouseEventArgs e)
+        private void DeleteVertex(Point p)
         {
             foreach(var polygon in polygons)
             {
-                var v = polygon.CheckVertex(e.Location);
+                var v = polygon.CheckVertex(p);
                 if (v == null)
                     continue;
                 if(polygon.Delete(v))
@@ -310,6 +312,78 @@ namespace Polygon
         {
             drawBresenham = true;
             Redraw();
+        }
+
+        private void addSizeRelationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (ContextMenuPosition == null)
+                return;
+            AddSizeRelation((Point)ContextMenuPosition);
+            ContextMenuPosition = null;
+        }
+
+        private void addParallelRelationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (ContextMenuPosition == null)
+                return;
+            AddParallelRelation((Point)ContextMenuPosition);
+            ContextMenuPosition = null;
+        }
+
+        private void addVertexToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (ContextMenuPosition == null)
+                return;
+            InsertNewVertex((Point)ContextMenuPosition);
+            ContextMenuPosition = null;
+        }
+
+        private void removeVertexToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (ContextMenuPosition == null)
+                return;
+            DeleteVertex((Point)ContextMenuPosition);
+            ContextMenuPosition = null;
+        }
+
+        private void contextMenu_Closed(object sender, ToolStripDropDownClosedEventArgs e)
+        {
+            //canvas.ContextMenuStrip = null;
+            foreach(ToolStripItem item in contextMenu.Items)
+            {
+                item.Enabled = false;
+            }
+            //ContextMenuPosition = null;
+        }
+
+        private void contextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            ContextMenuPosition = canvas.PointToClient(Cursor.Position);
+            foreach (var polygon in polygons)
+            {
+
+                // check if vertex was clicked
+                IMovable? temp = polygon.CheckVertex((Point)ContextMenuPosition);
+                if (temp != null)
+                {
+                    clickable = temp;
+                    removeVertexToolStripMenuItem.Enabled = true;
+                    return;
+                }
+
+                //check if edge was clicked
+                temp = polygon.CheckEdge((Point)ContextMenuPosition);
+                if(temp != null)
+                {
+                    clickable = temp;
+                    addSizeRelationToolStripMenuItem.Enabled = true;
+                    addParallelRelationToolStripMenuItem.Enabled = true;
+                    addVertexToolStripMenuItem.Enabled = true;
+                    return;
+                }
+
+            }
+            ContextMenuPosition = null;
         }
     }
 }

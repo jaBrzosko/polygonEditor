@@ -28,18 +28,24 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.radioButtonRelations = new System.Windows.Forms.RadioButton();
             this.radioButtonEdit = new System.Windows.Forms.RadioButton();
             this.radioButtonCreate = new System.Windows.Forms.RadioButton();
             this.canvas = new System.Windows.Forms.PictureBox();
+            this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.addSizeRelationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addParallelRelationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addVertexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeVertexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.tableLayoutPanel.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
+            this.contextMenu.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -63,28 +69,15 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.radioButtonRelations);
             this.groupBox1.Controls.Add(this.radioButtonEdit);
             this.groupBox1.Controls.Add(this.radioButtonCreate);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(118, 100);
+            this.groupBox1.Size = new System.Drawing.Size(118, 73);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Mode";
-            // 
-            // radioButtonRelations
-            // 
-            this.radioButtonRelations.AutoSize = true;
-            this.radioButtonRelations.Location = new System.Drawing.Point(15, 72);
-            this.radioButtonRelations.Name = "radioButtonRelations";
-            this.radioButtonRelations.Size = new System.Drawing.Size(73, 19);
-            this.radioButtonRelations.TabIndex = 2;
-            this.radioButtonRelations.TabStop = true;
-            this.radioButtonRelations.Text = "Relations";
-            this.radioButtonRelations.UseVisualStyleBackColor = true;
-            this.radioButtonRelations.CheckedChanged += new System.EventHandler(this.radioButtonRelations_CheckedChanged);
             // 
             // radioButtonEdit
             // 
@@ -116,6 +109,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.canvas.BackColor = System.Drawing.SystemColors.Control;
+            this.canvas.ContextMenuStrip = this.contextMenu;
             this.canvas.Location = new System.Drawing.Point(127, 3);
             this.canvas.Name = "canvas";
             this.canvas.Size = new System.Drawing.Size(650, 424);
@@ -127,13 +121,58 @@
             this.canvas.MouseMove += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseMove);
             this.canvas.MouseUp += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseUp);
             // 
+            // contextMenu
+            // 
+            this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addSizeRelationToolStripMenuItem,
+            this.addParallelRelationToolStripMenuItem,
+            this.addVertexToolStripMenuItem,
+            this.removeVertexToolStripMenuItem});
+            this.contextMenu.Name = "contextMenu";
+            this.contextMenu.Size = new System.Drawing.Size(181, 92);
+            this.contextMenu.Text = "Control";
+            this.contextMenu.Closed += new System.Windows.Forms.ToolStripDropDownClosedEventHandler(this.contextMenu_Closed);
+            this.contextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenu_Opening);
+            // 
+            // addSizeRelationToolStripMenuItem
+            // 
+            this.addSizeRelationToolStripMenuItem.Enabled = false;
+            this.addSizeRelationToolStripMenuItem.Name = "addSizeRelationToolStripMenuItem";
+            this.addSizeRelationToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.addSizeRelationToolStripMenuItem.Text = "Add size relation";
+            this.addSizeRelationToolStripMenuItem.Click += new System.EventHandler(this.addSizeRelationToolStripMenuItem_Click);
+            // 
+            // addParallelRelationToolStripMenuItem
+            // 
+            this.addParallelRelationToolStripMenuItem.Enabled = false;
+            this.addParallelRelationToolStripMenuItem.Name = "addParallelRelationToolStripMenuItem";
+            this.addParallelRelationToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.addParallelRelationToolStripMenuItem.Text = "Add parallel relation";
+            this.addParallelRelationToolStripMenuItem.Click += new System.EventHandler(this.addParallelRelationToolStripMenuItem_Click);
+            // 
+            // addVertexToolStripMenuItem
+            // 
+            this.addVertexToolStripMenuItem.Enabled = false;
+            this.addVertexToolStripMenuItem.Name = "addVertexToolStripMenuItem";
+            this.addVertexToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.addVertexToolStripMenuItem.Text = "Add vertex";
+            this.addVertexToolStripMenuItem.Click += new System.EventHandler(this.addVertexToolStripMenuItem_Click);
+            // 
+            // removeVertexToolStripMenuItem
+            // 
+            this.removeVertexToolStripMenuItem.Enabled = false;
+            this.removeVertexToolStripMenuItem.Name = "removeVertexToolStripMenuItem";
+            this.removeVertexToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.removeVertexToolStripMenuItem.Text = "Remove vertex";
+            this.removeVertexToolStripMenuItem.Click += new System.EventHandler(this.removeVertexToolStripMenuItem_Click);
+            // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.radioButton2);
             this.groupBox2.Controls.Add(this.radioButton1);
-            this.groupBox2.Location = new System.Drawing.Point(13, 119);
+            this.groupBox2.Location = new System.Drawing.Point(13, 92);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(118, 71);
+            this.groupBox2.Size = new System.Drawing.Size(118, 72);
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Line Drawing";
@@ -176,6 +215,7 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).EndInit();
+            this.contextMenu.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
@@ -189,9 +229,13 @@
         private RadioButton radioButtonEdit;
         private RadioButton radioButtonCreate;
         private PictureBox canvas;
-        private RadioButton radioButtonRelations;
         private GroupBox groupBox2;
         private RadioButton radioButton2;
         private RadioButton radioButton1;
+        private ContextMenuStrip contextMenu;
+        private ToolStripMenuItem addSizeRelationToolStripMenuItem;
+        private ToolStripMenuItem addParallelRelationToolStripMenuItem;
+        private ToolStripMenuItem addVertexToolStripMenuItem;
+        private ToolStripMenuItem removeVertexToolStripMenuItem;
     }
 }
