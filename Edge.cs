@@ -11,6 +11,14 @@ namespace Polygon
         public Vertex U { get; private set; }
         public Vertex V { get; private set; }
 
+        public double Length
+        {
+            get
+            {
+                return Math.Sqrt((U.X - V.X) * (U.X - V.X) + (U.Y - V.Y) * (U.Y - V.Y));
+            }
+        }
+
         public Edge(Vertex u, Vertex v)
         {
             this.U = u;

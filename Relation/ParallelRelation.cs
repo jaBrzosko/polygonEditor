@@ -130,7 +130,6 @@ namespace Polygon
 
         public void InitRelation()
         {
-            // Maybe make a list and iterate over it?
             List<((double dx, double dy) delta, Vertex which)> temp = new List<((double dx, double dy) delta, Vertex which)>();
             temp.Add((PrecomputeCorrection(u1, v1, u2, v2), v2));
             temp.Add((PrecomputeCorrection(u1, v1, v2, u2), u2));

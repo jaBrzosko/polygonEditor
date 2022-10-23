@@ -23,7 +23,7 @@ namespace Polygon
 
         public void AddSizeRelation(Edge e)
         {
-            SizeRelation rel = new SizeRelation(e);
+            SizeRelation rel = new SizeRelation(e, e.Length);
             // refine it to set only one relation
             if(!_relations.ContainsKey(e))
             {

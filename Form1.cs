@@ -41,9 +41,6 @@ namespace Polygon
                 case WorkType.Create:
                     CreateMode(e);
                     break;
-                case WorkType.Edit:
-                    EditMode(e);
-                    break;
             }
         }
 
@@ -63,11 +60,6 @@ namespace Polygon
                 }
                 Redraw();
             }
-        }
-
-        private void EditMode(MouseEventArgs e)
-        {
-
         }
 
         private void Redraw()
@@ -146,13 +138,6 @@ namespace Polygon
             Redraw();
         }
 
-        private void radioButtonRelations_CheckedChanged(object sender, EventArgs e)
-        {
-            workType = WorkType.Relations;
-            creating = null;
-            Redraw();
-        }
-
         private void canvas_MouseDown(object sender, MouseEventArgs e)
         {
             if(workType == WorkType.Edit && e.Button == MouseButtons.Left)
@@ -198,36 +183,6 @@ namespace Polygon
             Redraw();
         }
 
-        private void canvas_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            switch(workType)
-            {
-                case WorkType.Edit:
-                    switch (e.Button)
-                    {
-                        case MouseButtons.Left:
-                            InsertNewVertex(e.Location);
-                            break;
-                        case MouseButtons.Right:
-                            DeleteVertex(e.Location);
-                            break;
-                    }
-                    break;
-                case WorkType.Relations:
-                    switch(e.Button)
-                    {
-                        case MouseButtons.Left:
-                            AddSizeRelation(e.Location);
-                            break;
-                        case MouseButtons.Right:
-                            AddParallelRelation(e.Location);
-                            break;
-                    }
-                    break;
-            }
-
-        }
-
         private void AddSizeRelation(Point p)
         {
             foreach(var polygon in polygons)
@@ -237,10 +192,6 @@ namespace Polygon
                     continue;
 
                 relations.AddSizeRelation(edge);
-
-                //SizeRelation rel = new SizeRelation(edge);
-                //edge.U.AddRelation(rel);
-                //edge.V.AddRelation(rel);
             }
             Redraw();
         }
@@ -258,15 +209,7 @@ namespace Polygon
                     return;
                 }
 
-                // TODO: dont allow relations that are neighbours
                 relations.AddParallelRelation(firstEdge, edge);
-
-                //ParallelRelation parallelRelation = new ParallelRelation(firstEdge, edge);
-                //parallelRelation.InitRelation();
-                //firstEdge.U.AddRelation(parallelRelation);
-                //firstEdge.V.AddRelation(parallelRelation);
-                //edge.U.AddRelation(parallelRelation);
-                //edge.V.AddRelation(parallelRelation);
                 firstEdge = null;
             }
             Redraw();
@@ -348,16 +291,16 @@ namespace Polygon
 
         private void contextMenu_Closed(object sender, ToolStripDropDownClosedEventArgs e)
         {
-            //canvas.ContextMenuStrip = null;
             foreach(ToolStripItem item in contextMenu.Items)
             {
                 item.Enabled = false;
             }
-            //ContextMenuPosition = null;
         }
 
         private void contextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            if (workType != WorkType.Edit)
+                return;
             ContextMenuPosition = canvas.PointToClient(Cursor.Position);
             foreach (var polygon in polygons)
             {
