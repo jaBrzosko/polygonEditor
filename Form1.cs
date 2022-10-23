@@ -198,13 +198,30 @@ namespace Polygon
 
         private void AddSizeRelation(Point p)
         {
+
+            //var result = MessageBox.Show("Set edge length", "Size relation", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
             foreach(var polygon in polygons)
             {
                 var edge = polygon.CheckEdge(p);
                 if (edge == null)
                     continue;
 
-                relations.AddSizeRelation(edge);
+                Form dialog = new InputDialog(edge.Length.ToString("F2"));
+                var result = dialog.ShowDialog(this);
+                if (result != DialogResult.OK)
+                    return;
+
+                double lenght;
+                try
+                {
+                    lenght = double.Parse(dialog.Text);
+                }
+                catch
+                {
+                    return;
+                }
+
+                relations.AddSizeRelation(edge, lenght);
             }
             Redraw();
         }
@@ -235,6 +252,7 @@ namespace Polygon
                 var edge = polygon.CheckEdge(p);
                 if (edge == null)
                     continue;
+                relations.DeleteRelations(edge);
                 polygon.Insert(edge, p);
                 Redraw();
                 return;
@@ -248,6 +266,8 @@ namespace Polygon
                 var v = polygon.CheckVertex(p);
                 if (v == null)
                     continue;
+
+                relations.DeleteRelations(v);
                 if(polygon.Delete(v))
                 {
                     polygons.Remove(polygon);

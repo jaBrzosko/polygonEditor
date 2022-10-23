@@ -21,9 +21,9 @@ namespace Polygon
             parallelRelations = 0;
         }
 
-        public void AddSizeRelation(Edge e)
+        public void AddSizeRelation(Edge e, double length)
         {
-            SizeRelation rel = new SizeRelation(e, e.Length);
+            SizeRelation rel = new SizeRelation(e, length);
             // refine it to set only one relation
             if(!_relations.ContainsKey(e))
             {
@@ -59,7 +59,43 @@ namespace Polygon
 
         public void DeleteRelations(Edge e)
         {
+            foreach (var edge in _relations.Keys)
+            {
+                if (edge.Equals(e))
+                {
+                    foreach(var rel in _relations[edge])
+                    {
+                        rel.Dismantle();
+                    }
+                    _relations.Remove(edge);
+                }
+            }
+            CorrectRelations();
+        }
 
+
+        public void DeleteRelations(Vertex v)
+        {
+            foreach(var edge in _relations.Keys)
+            {
+                if(edge.Contains(v))
+                {
+                    foreach(var rel in _relations[edge])
+                    {
+                        rel.Dismantle();
+                    }
+                    _relations.Remove(edge);
+                }
+            }
+            CorrectRelations();
+        }
+
+        private void CorrectRelations()
+        {
+            foreach (var edge in _relations.Keys)
+            {
+                _relations[edge].RemoveAll(x => x.WasDismantled);
+            }
         }
 
         public void DrawRelations(Graphics g)

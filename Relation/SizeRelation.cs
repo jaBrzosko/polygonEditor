@@ -65,5 +65,12 @@ namespace Polygon
             double length = Math.Sqrt(dx * dx + dy * dy);
             return length.ToString("F2");
         }
+
+        public override void Dismantle()
+        {
+            u.DeleteRelation(this);
+            v.DeleteRelation(this);
+            WasDismantled = true;
+        }
     }
 }

@@ -50,5 +50,10 @@ namespace Polygon
 
             return (U  == e.U && V == e.V) || (U == e.V && V == e.U);
         }
+
+        public bool Contains(Vertex w)
+        {
+            return U == w || V == w;
+        }
     }
 }

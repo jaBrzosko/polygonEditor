@@ -175,5 +175,14 @@ namespace Polygon
         {
             return "||  " + relationNumber.ToString();
         }
+
+        public override void Dismantle()
+        {
+            u1.DeleteRelation(this);
+            v1.DeleteRelation(this);
+            u2.DeleteRelation(this);
+            v2.DeleteRelation(this);
+            WasDismantled = true;
+        }
     }
 }

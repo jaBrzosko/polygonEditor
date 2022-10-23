@@ -9,9 +9,16 @@ namespace Polygon
     internal abstract class Relation
     {
         public bool WasApplied { get; protected set; }
+        public bool WasDismantled { get; protected set; }
+
+        protected Relation()
+        {
+            WasDismantled = false;
+        }
 
         public abstract void ApplyRelation(Vertex u, double dx, double dy);
         public abstract bool EdgeSetCheck(Vertex u, Vertex v);
         public abstract string GetIcon();
+        public abstract void Dismantle();
     }
 }

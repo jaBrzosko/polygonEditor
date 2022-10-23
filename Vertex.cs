@@ -76,5 +76,10 @@ namespace Polygon
         {
             _relations.Add(rel);
         }
+
+        public void DeleteRelation(Relation rel)
+        {
+            _relations.Remove(rel);
+        }
     }
 }
