@@ -64,7 +64,7 @@
             this.tableLayoutPanel.Name = "tableLayoutPanel";
             this.tableLayoutPanel.RowCount = 1;
             this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel.Size = new System.Drawing.Size(1010, 559);
+            this.tableLayoutPanel.Size = new System.Drawing.Size(1070, 601);
             this.tableLayoutPanel.TabIndex = 1;
             // 
             // groupBox1
@@ -74,7 +74,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(155, 166);
+            this.groupBox1.Size = new System.Drawing.Size(164, 166);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Control";
@@ -84,7 +84,7 @@
             this.PolygonButton.Dock = System.Windows.Forms.DockStyle.Top;
             this.PolygonButton.Location = new System.Drawing.Point(3, 19);
             this.PolygonButton.Name = "PolygonButton";
-            this.PolygonButton.Size = new System.Drawing.Size(149, 53);
+            this.PolygonButton.Size = new System.Drawing.Size(158, 53);
             this.PolygonButton.TabIndex = 0;
             this.PolygonButton.Text = "Add polygon";
             this.PolygonButton.UseVisualStyleBackColor = true;
@@ -97,7 +97,7 @@
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.groupBox2.Location = new System.Drawing.Point(3, 91);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(149, 72);
+            this.groupBox2.Size = new System.Drawing.Size(158, 72);
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Line Drawing";
@@ -133,9 +133,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.canvas.BackColor = System.Drawing.SystemColors.Control;
             this.canvas.ContextMenuStrip = this.contextMenu;
-            this.canvas.Location = new System.Drawing.Point(164, 3);
+            this.canvas.Location = new System.Drawing.Point(173, 3);
             this.canvas.Name = "canvas";
-            this.canvas.Size = new System.Drawing.Size(843, 553);
+            this.canvas.Size = new System.Drawing.Size(894, 595);
             this.canvas.TabIndex = 0;
             this.canvas.TabStop = false;
             this.canvas.MouseClick += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseClick);
@@ -201,7 +201,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1030, 579);
+            this.ClientSize = new System.Drawing.Size(1090, 621);
             this.Controls.Add(this.tableLayoutPanel);
             this.Name = "Form1";
             this.Text = "Polygon Editor";

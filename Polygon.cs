@@ -199,8 +199,16 @@ namespace Polygon
                 return false;
             }
 
-            vertices.Clear();
             return true;
+        }
+
+        public void Dismantle(RelationCollection relations)
+        {
+            foreach(var v in vertices)
+            {
+                relations.DeleteRelations(v);
+            }
+            vertices.Clear();
         }
     }
 }

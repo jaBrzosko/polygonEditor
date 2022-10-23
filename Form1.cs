@@ -37,6 +37,7 @@ namespace Polygon
             relations = new RelationCollection();
             workType = WorkType.Edit;
 
+            SceneLoader.LoadScene(polygons, relations);
             Redraw();
         }
 
@@ -294,6 +295,12 @@ namespace Polygon
                 relations.DeleteRelations(v);
                 if(polygon.Delete(v))
                 {
+                    var result = MessageBox.Show("Are you sure you want to delete whole polygon?", "Polygon delete", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+
+                    if (result != DialogResult.OK)
+                        return;
+
+                    polygon.Dismantle(relations);
                     polygons.Remove(polygon);
                 }
 
