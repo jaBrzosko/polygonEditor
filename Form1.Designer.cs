@@ -31,8 +31,7 @@
             this.components = new System.ComponentModel.Container();
             this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.radioButtonEdit = new System.Windows.Forms.RadioButton();
-            this.radioButtonCreate = new System.Windows.Forms.RadioButton();
+            this.PolygonButton = new System.Windows.Forms.Button();
             this.canvas = new System.Windows.Forms.PictureBox();
             this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addSizeRelationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -69,39 +68,25 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.radioButtonEdit);
-            this.groupBox1.Controls.Add(this.radioButtonCreate);
+            this.groupBox1.Controls.Add(this.PolygonButton);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(118, 73);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Mode";
+            this.groupBox1.Text = "Control";
             // 
-            // radioButtonEdit
+            // PolygonButton
             // 
-            this.radioButtonEdit.AutoSize = true;
-            this.radioButtonEdit.Location = new System.Drawing.Point(15, 47);
-            this.radioButtonEdit.Name = "radioButtonEdit";
-            this.radioButtonEdit.Size = new System.Drawing.Size(45, 19);
-            this.radioButtonEdit.TabIndex = 1;
-            this.radioButtonEdit.TabStop = true;
-            this.radioButtonEdit.Text = "Edit";
-            this.radioButtonEdit.UseVisualStyleBackColor = true;
-            this.radioButtonEdit.CheckedChanged += new System.EventHandler(this.radioButtonEdit_CheckedChanged);
-            // 
-            // radioButtonCreate
-            // 
-            this.radioButtonCreate.AutoSize = true;
-            this.radioButtonCreate.Location = new System.Drawing.Point(15, 22);
-            this.radioButtonCreate.Name = "radioButtonCreate";
-            this.radioButtonCreate.Size = new System.Drawing.Size(59, 19);
-            this.radioButtonCreate.TabIndex = 0;
-            this.radioButtonCreate.TabStop = true;
-            this.radioButtonCreate.Text = "Create";
-            this.radioButtonCreate.UseVisualStyleBackColor = true;
-            this.radioButtonCreate.CheckedChanged += new System.EventHandler(this.radioButtonCreate_CheckedChanged);
+            this.PolygonButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.PolygonButton.Location = new System.Drawing.Point(3, 19);
+            this.PolygonButton.Name = "PolygonButton";
+            this.PolygonButton.Size = new System.Drawing.Size(112, 51);
+            this.PolygonButton.TabIndex = 0;
+            this.PolygonButton.Text = "Add polygon";
+            this.PolygonButton.UseVisualStyleBackColor = true;
+            this.PolygonButton.Click += new System.EventHandler(this.PolygonButton_Click);
             // 
             // canvas
             // 
@@ -212,7 +197,6 @@
             this.SizeChanged += new System.EventHandler(this.Form1_SizeChanged);
             this.tableLayoutPanel.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).EndInit();
             this.contextMenu.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
@@ -225,8 +209,6 @@
 
         private TableLayoutPanel tableLayoutPanel;
         private GroupBox groupBox1;
-        private RadioButton radioButtonEdit;
-        private RadioButton radioButtonCreate;
         private PictureBox canvas;
         private GroupBox groupBox2;
         private RadioButton radioButton2;
@@ -236,5 +218,6 @@
         private ToolStripMenuItem addParallelRelationToolStripMenuItem;
         private ToolStripMenuItem addVertexToolStripMenuItem;
         private ToolStripMenuItem removeVertexToolStripMenuItem;
+        private Button PolygonButton;
     }
 }

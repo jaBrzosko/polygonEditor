@@ -15,6 +15,7 @@ namespace Polygon
         private Point? ContextMenuPosition;
         private Edge? firstEdge;
         private bool drawBresenham;
+        private bool isCreating;
         private RelationCollection relations;
 
         private readonly Color backgroundColor = Color.Gray;
@@ -30,7 +31,10 @@ namespace Polygon
             canvas.Image = background;
             firstEdge = null;
             drawBresenham = false;
+            isCreating = false;
             relations = new RelationCollection();
+            workType = WorkType.Edit;
+
             Redraw();
         }
 
@@ -57,6 +61,10 @@ namespace Polygon
                 {
                     polygons.Add(creating);
                     creating = null;
+                    if(isCreating)
+                    {
+                        PolygonButton.PerformClick();
+                    }
                 }
                 Redraw();
             }
@@ -126,15 +134,20 @@ namespace Polygon
             LastPosition = e.Location;
         }
 
-        private void radioButtonCreate_CheckedChanged(object sender, EventArgs e)
+        private void PolygonButton_Click(object sender, EventArgs e)
         {
-            workType = WorkType.Create;
-        }
-
-        private void radioButtonEdit_CheckedChanged(object sender, EventArgs e)
-        {
-            workType = WorkType.Edit;
-            creating = null;
+            if(isCreating)
+            {
+                workType = WorkType.Edit;
+                creating = null;
+                PolygonButton.Text = "Add polygon";
+            }
+            else
+            {
+                workType = WorkType.Create;
+                PolygonButton.Text = "Cancel";
+            }
+            isCreating = !isCreating;
             Redraw();
         }
 
