@@ -52,6 +52,13 @@ namespace Polygon
             }
             WasApplied = false;
         }
+
+        public void UpdateLength(double length)
+        {
+            this.length = length;
+            Shrink(u, v);
+        }
+
         public override bool EdgeSetCheck(Vertex U, Vertex V)
         {
             return (u.Equals(U) && v.Equals(V)) || (u.Equals(V) && v.Equals(U));
@@ -71,6 +78,11 @@ namespace Polygon
             u.DeleteRelation(this);
             v.DeleteRelation(this);
             WasDismantled = true;
+        }
+
+        public override string GetName()
+        {
+            return "Size relation";
         }
     }
 }

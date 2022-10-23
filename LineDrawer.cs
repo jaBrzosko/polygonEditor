@@ -14,7 +14,7 @@ namespace Polygon
         }
 
         //https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
-        public static void DrawBersenhamLine(Bitmap image, Point u, Point v)
+        public static void DrawBersenhamLine(Bitmap image, Point u, Point v, Color color)
         {
             int x0 = u.X;
             int y0 = u.Y;
@@ -23,21 +23,21 @@ namespace Polygon
             if (Math.Abs(y1 - y0) < Math.Abs(x1 - x0))
             {
                 if (x0 > x1)
-                    PlotLineLow(x1, y1, x0, y0, image);
+                    PlotLineLow(x1, y1, x0, y0, image, color);
                 else
-                    PlotLineLow(x0, y0, x1, y1, image);
+                    PlotLineLow(x0, y0, x1, y1, image, color);
 
             }
             else
             {
                 if (y0 > y1)
-                    PlotLineHigh(x1, y1, x0, y0, image);
+                    PlotLineHigh(x1, y1, x0, y0, image, color);
                 else
-                    PlotLineHigh(x0, y0, x1, y1, image);
+                    PlotLineHigh(x0, y0, x1, y1, image, color);
             }
         }
 
-        private static void PlotLineLow(int x0, int y0, int x1, int y1, Bitmap image)
+        private static void PlotLineLow(int x0, int y0, int x1, int y1, Bitmap image, Color color)
         {
             int dx = x1 - x0;
             int dy = y1 - y0;
@@ -53,7 +53,7 @@ namespace Polygon
             for (int x = x0; x < x1; x++)
             {
                 if(x > 0 && y > 0 && x < image.Width && y < image.Height)
-                    image.SetPixel(x, y, Color.Black);
+                    image.SetPixel(x, y, color);
                 if (D > 0)
                 {
                     y += yi;
@@ -66,7 +66,7 @@ namespace Polygon
             }
         }
 
-        private static void PlotLineHigh(int x0, int y0, int x1, int y1, Bitmap image)
+        private static void PlotLineHigh(int x0, int y0, int x1, int y1, Bitmap image, Color color)
         {
             int dx = x1 - x0;
             int dy = y1 - y0;
@@ -82,7 +82,7 @@ namespace Polygon
             for (int y = y0; y < y1; y++)
             {
                 if (x > 0 && y > 0 && x < image.Width && y < image.Height)
-                    image.SetPixel(x, y, Color.Black);
+                    image.SetPixel(x, y, color);
                 if (D > 0)
                 {
                     x += xi;

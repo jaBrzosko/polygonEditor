@@ -137,7 +137,7 @@ namespace Polygon
                 g.FillEllipse(brush, point.X - radius, point.Y - radius, 2 * radius, 2 * radius);
                 if (drawBersenham)
                 {
-                    LineDrawer.DrawBersenhamLine(image, prev, point);
+                    LineDrawer.DrawBersenhamLine(image, prev, point, brush.Color);
                 }
                 else
                 {
@@ -157,7 +157,7 @@ namespace Polygon
                 g.FillEllipse(brush, point.X - radius, point.Y - radius, 2 * radius, 2 * radius);
                 if(drawBersenham)
                 {
-                    LineDrawer.DrawBersenhamLine(image, prev, point);
+                    LineDrawer.DrawBersenhamLine(image, prev, point, brush.Color);
                 }
                 else
                 {

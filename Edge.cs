@@ -55,5 +55,10 @@ namespace Polygon
         {
             return U == w || V == w;
         }
+
+        public bool Intersect(Edge e)
+        {
+            return e.U == U || e.U == V || e.V == U || e.V == V;
+        }
     }
 }

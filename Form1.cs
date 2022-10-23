@@ -17,6 +17,7 @@ namespace Polygon
         private bool drawBresenham;
         private bool isCreating;
         private RelationCollection relations;
+        private Edge? contextEdge;
 
         private readonly Color backgroundColor = Color.Gray;
         private readonly Color drawColor = Color.Black;
@@ -32,6 +33,7 @@ namespace Polygon
             firstEdge = null;
             drawBresenham = false;
             isCreating = false;
+            contextEdge = null;
             relations = new RelationCollection();
             workType = WorkType.Edit;
 
@@ -45,6 +47,11 @@ namespace Polygon
                 case WorkType.Create:
                     CreateMode(e);
                     break;
+                case WorkType.Edit:
+                    if(firstEdge != null)
+                        AddParallelRelation(e.Location);
+                    break;
+                    
             }
         }
 
@@ -95,12 +102,25 @@ namespace Polygon
                 {
                     if (drawBresenham)
                     {
-                        LineDrawer.DrawBersenhamLine(background, creating.LastVertex.GetPoint(), e.Location);
+                        LineDrawer.DrawBersenhamLine(background, creating.LastVertex.GetPoint(), e.Location, brush.Color);
                     }
                     else
                     {
                         LineDrawer.DrawLine(g, pen, creating.LastVertex.GetPoint(), e.Location);
                     }
+                }
+            }
+
+            if(firstEdge != null)
+            {
+                if (drawBresenham)
+                {
+                    LineDrawer.DrawBersenhamLine(background, firstEdge.U.GetPoint(), firstEdge.V.GetPoint(), Color.Orange);
+                }
+                else
+                {
+                    using Pen pen1 = new Pen(Color.Orange, 2);
+                    LineDrawer.DrawLine(g, pen1, firstEdge.U.GetPoint(), firstEdge.V.GetPoint());
                 }
             }
 
@@ -236,10 +256,14 @@ namespace Polygon
                 if(firstEdge == null)
                 {
                     firstEdge = edge;
+                    Redraw();
                     return;
                 }
 
-                relations.AddParallelRelation(firstEdge, edge);
+                if(!relations.AddParallelRelation(firstEdge, edge))
+                {
+                    MessageBox.Show("You can't make neighboring edges parallel", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
                 firstEdge = null;
             }
             Redraw();
@@ -328,6 +352,8 @@ namespace Polygon
             {
                 item.Enabled = false;
             }
+            contextEdge = null;
+            removeRelationToolStripMenuItem.DropDownItems.Clear();
         }
 
         private void contextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
@@ -353,13 +379,38 @@ namespace Polygon
                 {
                     clickable = temp;
                     addSizeRelationToolStripMenuItem.Enabled = true;
-                    addParallelRelationToolStripMenuItem.Enabled = true;
+                    if(firstEdge == null)
+                    {
+                        addParallelRelationToolStripMenuItem.Enabled = true;
+                    }
                     addVertexToolStripMenuItem.Enabled = true;
+
+                    // check for all relations on the edge
+                    var rels = relations.GetRelation((Edge)temp);
+
+                    if (rels.Count > 0)
+                    {
+                        removeRelationToolStripMenuItem.Enabled = true;
+                        contextEdge = (Edge)temp;
+
+                        foreach (var rel in rels)
+                        {
+                            removeRelationToolStripMenuItem.DropDownItems.Add(rel.GetName());
+                        }
+                    }
                     return;
                 }
 
             }
             ContextMenuPosition = null;
+        }
+
+        private void removeRelationToolStripMenuItem_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            if (contextEdge == null)
+                return;
+            relations.DeleteRelations(contextEdge, e.ClickedItem.Text);
+            Redraw();
         }
     }
 }

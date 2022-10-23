@@ -19,6 +19,7 @@ namespace Polygon
         public abstract void ApplyRelation(Vertex u, double dx, double dy);
         public abstract bool EdgeSetCheck(Vertex u, Vertex v);
         public abstract string GetIcon();
+        public abstract string GetName();
         public abstract void Dismantle();
     }
 }

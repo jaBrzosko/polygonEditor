@@ -184,5 +184,10 @@ namespace Polygon
             v2.DeleteRelation(this);
             WasDismantled = true;
         }
+
+        public override string GetName()
+        {
+            return "Parallel relation number " + relationNumber;
+        }
     }
 }
