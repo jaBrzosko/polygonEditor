@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Polygon
+﻿namespace Polygon
 {
     internal class LineDrawer
     {
@@ -52,7 +46,7 @@ namespace Polygon
 
             for (int x = x0; x < x1; x++)
             {
-                if(x > 0 && y > 0 && x < image.Width && y < image.Height)
+                if (x > 0 && y > 0 && x < image.Width && y < image.Height) // this if is required by how C# Bitmap works
                     image.SetPixel(x, y, color);
                 if (D > 0)
                 {

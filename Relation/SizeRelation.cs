@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Polygon
+﻿namespace Polygon
 {
     internal class SizeRelation : Relation
     {
@@ -40,19 +34,18 @@ namespace Polygon
         public override void ApplyRelation(Vertex w, double dx, double dy)
         {
             WasApplied = true;
-            if(u.Equals(w))
+            if (u.Equals(w))
             {
                 Shrink(u, v);
-                //v.Move(dx, dy);
             }
             else
             {
                 Shrink(v, u);
-                //u.Move(dx, dy);
             }
             WasApplied = false;
         }
 
+        // if SizeRelation needs to be changed
         public void UpdateLength(double length)
         {
             this.length = length;

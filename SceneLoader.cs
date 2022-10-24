@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Polygon
+﻿namespace Polygon
 {
     internal class SceneLoader
     {
-
+        // Hard coded scene positions
         public static void LoadScene(List<Polygon> polygons, RelationCollection relations)
         {
             // Polygon 1
@@ -20,7 +14,7 @@ namespace Polygon
 
             Point[] points1 = new Point[] { p11, p12, p13 };
 
-            foreach(var point in points1)
+            foreach (var point in points1)
             {
                 pol1.AddPoint(point.X, point.Y);
             }
@@ -58,7 +52,7 @@ namespace Polygon
             Point p37 = new Point(210, 390);
             Point p38 = new Point(140, 280);
 
-            Point[] points3 = new Point[] { p31, p32, p33, p34, p35, p36, p37, p38};
+            Point[] points3 = new Point[] { p31, p32, p33, p34, p35, p36, p37, p38 };
 
             foreach (var point in points3)
             {

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Polygon
+﻿namespace Polygon
 {
     internal abstract class Relation
     {
@@ -18,8 +12,8 @@ namespace Polygon
 
         public abstract void ApplyRelation(Vertex u, double dx, double dy);
         public abstract bool EdgeSetCheck(Vertex u, Vertex v);
-        public abstract string GetIcon();
-        public abstract string GetName();
+        public abstract string GetIcon(); // is used in drawing relation
+        public abstract string GetName(); // is used in context menu
         public abstract void Dismantle();
     }
 }

@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Polygon
+﻿namespace Polygon
 {
-    internal class Edge: IMovable
+    // Edge is more of a container for two vertices. There is no guarantee two vertices will always be in the same Edge class
+    internal class Edge : IMovable
     {
         public Vertex U { get; private set; }
         public Vertex V { get; private set; }
@@ -27,28 +22,21 @@ namespace Polygon
 
         public void Move(double dx, double dy)
         {
-            //U.Move(dx, dy);
-            //V.Move(dx, dy);
             // In the beggining edge was moved as two vertices. Finally it's done via proxy thorugh one of them
             // It let's us properly apply relations without double moving
             U.MoveByEdge(dx, dy, V);
         }
 
-        public void Shrink(Vertex u, double length)
+        public override bool Equals(object? obj) // Edge(u, v) == (Edge(v, u) and architecture flaws
         {
-            //TODO: Implement
-        }
-
-        public override bool Equals(object? obj)
-        {
-            if(obj == null || obj.GetType() != typeof(Edge))
+            if (obj == null || obj.GetType() != typeof(Edge))
             {
                 return false;
             }
 
             Edge e = (Edge)obj;
 
-            return (U  == e.U && V == e.V) || (U == e.V && V == e.U);
+            return (U == e.U && V == e.V) || (U == e.V && V == e.U);
         }
 
         public bool Contains(Vertex w)
@@ -56,7 +44,7 @@ namespace Polygon
             return U == w || V == w;
         }
 
-        public bool Intersect(Edge e)
+        public bool Intersect(Edge e) // both have at least one common vertex
         {
             return e.U == U || e.U == V || e.V == U || e.V == V;
         }

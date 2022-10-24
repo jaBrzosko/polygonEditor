@@ -1,48 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Polygon
+﻿namespace Polygon
 {
     internal class ParallelRelation : Relation
     {
         private Vertex u1, v1, u2, v2;
-        private int relationNumber;
+        private int relationNumber; // it helps to tell relations apart for user
 
         public ParallelRelation(Edge e1, Edge e2, int relationNumber = 0) : this(e1.U, e1.V, e2.U, e2.V, relationNumber) { }
 
         public ParallelRelation(Vertex u1, Vertex v1, Vertex u2, Vertex v2, int relationNumber)
         {
-            // probably have to implement some smart way to sort them
             this.u1 = u1;
             this.v1 = v1;
             this.u2 = u2;
             this.v2 = v2;
             this.relationNumber = relationNumber;
         }
-        
+
         public override void ApplyRelation(Vertex u, double dx, double dy)
         {
-            if(u.Equals(u1))
+            // we calculate which vertex should be corrected
+            if (u.Equals(u1))
             {
                 AdjustEdge(u1, v1, u2, v2, dx, dy);
             }
-            else if(u.Equals(u2))
+            else if (u.Equals(u2))
             {
-                AdjustEdge(u2 , v2, u1, v1, dx, dy);
+                AdjustEdge(u2, v2, u1, v1, dx, dy);
             }
-            else if(u.Equals(v1))
+            else if (u.Equals(v1))
             {
                 AdjustEdge(v1, u1, v2, u2, dx, dy);
             }
-            else if(u.Equals(v2))
+            else if (u.Equals(v2))
             {
                 AdjustEdge(v2, u2, v1, u1, dx, dy);
             }
         }
 
+        // we solve Ax + By + C = 0 equations for both edges and then correct the proper one to match parallel property
         private void AdjustEdge(Vertex sourceMoved, Vertex sourceStayed, Vertex destinationToBeMoved, Vertex destinationStayed, double dx, double dy)
         {
             var eq1 = SolveEquation(sourceMoved, sourceStayed);
@@ -51,23 +46,12 @@ namespace Polygon
             var neq = SolveForNewValues(eq1, eq2);
 
             AdjustVertex(neq.A, neq.B, destinationToBeMoved, destinationStayed);
-
-
-            //if (destinationStayed.X == destinationToBeMoved.X && destinationToBeMoved.Y == destinationStayed.Y)
-            //    return;
-
-            //double nominator = GetDistanceSquared(destinationToBeMoved, destinationStayed);
-            //double denominator = GetDistanceSquared(sourceMoved, sourceStayed);
-            //if (denominator < 0.0001f)
-            //    return;
-            //double coof = Math.Sqrt(nominator / denominator);
-            //destinationToBeMoved.Move(dx * coof, dy *coof);
         }
 
         private (double A, double B) SolveEquation(Vertex u, Vertex v)
         {
             double A, B;
-            if(u.Y == v.Y)
+            if (u.Y == v.Y)
             {
                 A = 0;
                 B = 1;
@@ -96,19 +80,43 @@ namespace Polygon
             return (eq1.A * eq2.B / eq1.B, eq2.B);
         }
 
+        // it calculates orthogonal projection of point onto line Ax + BY that goes through stationary Vertex
         private void AdjustVertex(double A, double B, Vertex toBeMoved, Vertex stationary)
         {
+            // vector from stationary to toBeMoved
             double dx = toBeMoved.X - stationary.X;
             double dy = toBeMoved.Y - stationary.Y;
 
-            double denom = B * B + A * A;
-            double ab = A * B;
+            // parameter calculations which were determined outside code
 
-            double nx = (B * B * dx - ab * dy) / denom;
-            double ny = (A * A * dy - ab * dx) / denom;
 
-            double dnx = nx - dx;
-            double dny = ny - dy;
+            double dnx, dny;
+            //check if A or B is 0
+            // A == 0 => By + C = 0, line is vertical
+            if(B == 0)
+            {
+                dnx = 0;
+                dny = stationary.Y - toBeMoved.Y;
+            }
+            // B == 0 => Ax + C = 0, line is horizontal
+            else if(B == 0)
+            {
+                dnx = stationary.X - toBeMoved.X;
+                dny = 0;
+            }
+            else
+            {
+                double denom = B * B + A * A;
+                double ab = A * B;
+                // new x and y values - orthogonal projection
+                double nx = (B * B * dx - ab * dy) / denom;
+                double ny = (A * A * dy - ab * dx) / denom;
+
+                // vector values by which toBeMoved should be moved
+                dnx = nx - dx;
+                dny = ny - dy;
+            }
+
 
             toBeMoved.Move(dnx, dny);
         }
@@ -118,11 +126,6 @@ namespace Polygon
             return (u.X - v.X) * (u.X - v.X) + (u.Y - v.Y) * (u.Y - v.Y);
         }
 
-        private double GetDistance(Vertex u, Vertex v)
-        {
-            return Math.Sqrt(GetDistanceSquared(u, v));
-        }
-
         public override bool EdgeSetCheck(Vertex u, Vertex v)
         {
             return (u.Equals(u1) && v.Equals(v1)) || (u.Equals(v1) && v.Equals(u1)) || (u.Equals(u2) && v.Equals(v2)) || (u.Equals(v2) && v.Equals(u2));
@@ -130,6 +133,8 @@ namespace Polygon
 
         public void InitRelation()
         {
+            // we make list of all possible moves so that we pick the best one - it can be done on init, but
+            // rather slows program too much resources in real time calculations
             List<((double dx, double dy) delta, Vertex which)> temp = new List<((double dx, double dy) delta, Vertex which)>();
             temp.Add((PrecomputeCorrection(u1, v1, u2, v2), v2));
             temp.Add((PrecomputeCorrection(u1, v1, v2, u2), u2));
@@ -140,12 +145,13 @@ namespace Polygon
             temp.Add((PrecomputeCorrection(v2, u2, u1, v1), v1));
             temp.Add((PrecomputeCorrection(v2, u2, v1, u1), u1));
 
+            // we find the best move
             double minDist = double.MaxValue;
             ((double dx, double dy) delta, Vertex which) result = temp[0];
-            foreach(var it in temp)
+            foreach (var it in temp)
             {
                 var dist = it.delta.dx * it.delta.dx + it.delta.dy * it.delta.dy;
-                if(dist < minDist)
+                if (dist < minDist)
                 {
                     minDist = dist;
                     result = it;

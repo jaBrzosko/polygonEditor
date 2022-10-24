@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Polygon
+﻿namespace Polygon
 {
-    internal class Polygon: IMovable
+    internal class Polygon : IMovable
     {
-        private LinkedList<Vertex> vertices; //probably change it to normal list - no real use in this form
-        private readonly static double deltaE = 25; //squared
-        private readonly static double deltaV = 25;
+        private LinkedList<Vertex> vertices; 
+        private readonly static double deltaE = 25; // squared - we don't have to calculate root
+        private readonly static double deltaV = 25; // squared
 
         public Polygon()
         {
@@ -23,25 +17,28 @@ namespace Polygon
         {
             Vertex temp = new Vertex(x, y);
 
-            if(CheckIfEnds(x, y))
+            // we want to stop creating polygon when last vertex is first
+            if (CheckIfEnds(x, y))
             {
-                return true;
+                // this prevents creating line
+                return vertices.Count > 2;
             }
 
             vertices.AddLast(temp);
             return false;
         }
 
+        // if point p corresponds to any movable part of this polygon we return it
         public IMovable? CheckMovable(Point p)
         {
             var v = CheckVertex(p);
-            if(v != null)
+            if (v != null)
                 return v;
             var e = CheckEdge(p);
-            if(e != null)
+            if (e != null)
                 return e;
             var poly = CheckPolygon(p);
-            if(poly != null)
+            if (poly != null)
                 return poly;
 
             return null;
@@ -49,9 +46,9 @@ namespace Polygon
 
         public Vertex? CheckVertex(Point p)
         {
-            foreach(var v in vertices)
+            foreach (var v in vertices)
             {
-                if(CheckCollision(p.X, p.Y, v))
+                if (CheckCollision(p.X, p.Y, v))
                     return v;
             }
             return null;
@@ -61,7 +58,7 @@ namespace Polygon
         {
             var temp = new List<Vertex>();
             temp.AddRange(vertices);
-            for(int i = 0; i < vertices.Count; i++)
+            for (int i = 0; i < vertices.Count; i++)
             {
                 int j = (i + 1) % vertices.Count;
                 double result = GetDistance(p.X, p.Y, temp[i].X, temp[i].Y, temp[j].X, temp[j].Y);
@@ -71,6 +68,7 @@ namespace Polygon
             return null;
         }
 
+        // we check polygon as a square hitbox
         private Polygon? CheckPolygon(Point p)
         {
             double minx = vertices.Min(v => v.X);
@@ -83,6 +81,7 @@ namespace Polygon
             return null;
         }
 
+        // distance from edge and not a line which is important
         private double GetDistance(double x0, double y0, double x1, double y1, double x2, double y2)
         {
             // https://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment with slight modifications
@@ -94,7 +93,7 @@ namespace Polygon
             double dot = A * C + B * D;
             double len_sq = C * C + D * D;
             double param = -1;
-            if (len_sq != 0) //in case of 0 length line
+            if (len_sq != 0)
                 param = dot / len_sq;
 
             double xx, yy;
@@ -104,7 +103,7 @@ namespace Polygon
                 xx = x1 + param * C;
                 yy = y1 + param * D;
             }
-            else return double.MaxValue;
+            else return double.MaxValue; // param in (0, 1) means we are in valid proximity of line
 
             var dx = x0 - xx;
             var dy = y0 - yy;
@@ -122,7 +121,7 @@ namespace Polygon
 
         private bool CheckIfEnds(int x, int y)
         {
-            if(vertices.Count == 0)
+            if (vertices.Count == 0)
                 return false;
 
             return CheckCollision(x, y, vertices.First());
@@ -131,7 +130,7 @@ namespace Polygon
         public void DrawPolygon(Graphics g, SolidBrush brush, Pen pen, int radius, bool drawBersenham, Bitmap image)
         {
             Point prev = vertices.Last().GetPoint();
-            foreach(Vertex v in vertices)
+            foreach (Vertex v in vertices)
             {
                 Point point = v.GetPoint();
                 g.FillEllipse(brush, point.X - radius, point.Y - radius, 2 * radius, 2 * radius);
@@ -147,6 +146,7 @@ namespace Polygon
             }
         }
 
+        // the difference between this and DrawPolygon() is that we don't draw edge between first and last vertices
         public void DrawPolygonInCreation(Graphics g, SolidBrush brush, Pen pen, int radius, bool drawBersenham, Bitmap image)
         {
             Point prev = vertices.First().GetPoint();
@@ -155,7 +155,7 @@ namespace Polygon
             {
                 Point point = v.GetPoint();
                 g.FillEllipse(brush, point.X - radius, point.Y - radius, 2 * radius, 2 * radius);
-                if(drawBersenham)
+                if (drawBersenham)
                 {
                     LineDrawer.DrawBersenhamLine(image, prev, point, brush.Color);
                 }
@@ -169,7 +169,7 @@ namespace Polygon
 
         public void Move(double dx, double dy)
         {
-            foreach(var v in vertices)
+            foreach (var v in vertices)
             {
                 v.MoveByPolygon(dx, dy);
             }
@@ -193,7 +193,7 @@ namespace Polygon
 
         public bool Delete(Vertex v)
         {
-            if(vertices.Count > 3)
+            if (vertices.Count > 3)
             {
                 vertices.Remove(v);
                 return false;
@@ -202,9 +202,10 @@ namespace Polygon
             return true;
         }
 
+        // when user decides to delete polygon it has to be dismantled so all relations are properly deleted
         public void Dismantle(RelationCollection relations)
         {
-            foreach(var v in vertices)
+            foreach (var v in vertices)
             {
                 relations.DeleteRelations(v);
             }

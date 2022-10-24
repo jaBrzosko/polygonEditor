@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 namespace Polygon
 {
     public partial class Form1 : Form
@@ -43,16 +41,16 @@ namespace Polygon
 
         private void canvas_MouseClick(object sender, MouseEventArgs e)
         {
-            switch(workType)
+            switch (workType)
             {
                 case WorkType.Create:
                     CreateMode(e);
                     break;
                 case WorkType.Edit:
-                    if(firstEdge != null)
+                    if (firstEdge != null)
                         AddParallelRelation(e.Location);
                     break;
-                    
+
             }
         }
 
@@ -69,7 +67,7 @@ namespace Polygon
                 {
                     polygons.Add(creating);
                     creating = null;
-                    if(isCreating)
+                    if (isCreating)
                     {
                         PolygonButton.PerformClick();
                     }
@@ -96,7 +94,7 @@ namespace Polygon
                 polygon.DrawPolygon(g, brush, pen, radius, drawBresenham, background);
             }
 
-            if(creating != null)
+            if (creating != null)
             {
                 creating.DrawPolygonInCreation(g, brush, pen, radius, drawBresenham, background);
                 if (e != null)
@@ -112,7 +110,7 @@ namespace Polygon
                 }
             }
 
-            if(firstEdge != null)
+            if (firstEdge != null)
             {
                 if (drawBresenham)
                 {
@@ -132,7 +130,7 @@ namespace Polygon
 
         private void canvas_MouseMove(object sender, MouseEventArgs e)
         {
-            switch(workType)
+            switch (workType)
             {
                 case WorkType.Create:
                     Redraw(e);
@@ -157,7 +155,8 @@ namespace Polygon
 
         private void PolygonButton_Click(object sender, EventArgs e)
         {
-            if(isCreating)
+            // switch button for creating polygons
+            if (isCreating)
             {
                 workType = WorkType.Edit;
                 creating = null;
@@ -172,18 +171,20 @@ namespace Polygon
             Redraw();
         }
 
+        // we start recording drag and drop
         private void canvas_MouseDown(object sender, MouseEventArgs e)
         {
-            if(workType == WorkType.Edit && e.Button == MouseButtons.Left)
+            if (workType == WorkType.Edit && e.Button == MouseButtons.Left)
             {
-                movable = CheckVertex(e);
+                movable = CheckMovable(e);
                 LastPosition = e.Location;
             }
         }
 
-        private IMovable? CheckVertex(MouseEventArgs e)
+        // check if IMovable object was clicked
+        private IMovable? CheckMovable(MouseEventArgs e)
         {
-            foreach(Polygon polygon in polygons)
+            foreach (Polygon polygon in polygons)
             {
                 var temp = polygon.CheckMovable(e.Location);
                 if (temp != null)
@@ -194,6 +195,7 @@ namespace Polygon
             return null;
         }
 
+        // end of drag and drop mechanic
         private void canvas_MouseUp(object sender, MouseEventArgs e)
         {
             if (workType == WorkType.Edit)
@@ -203,6 +205,7 @@ namespace Polygon
             }
         }
 
+        // scale up and down bitmap
         private void Form1_SizeChanged(object sender, EventArgs e)
         {
             Size size = tableLayoutPanel.GetControlFromPosition(1, 0).Size;
@@ -220,8 +223,7 @@ namespace Polygon
         private void AddSizeRelation(Point p)
         {
 
-            //var result = MessageBox.Show("Set edge length", "Size relation", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-            foreach(var polygon in polygons)
+            foreach (var polygon in polygons)
             {
                 var edge = polygon.CheckEdge(p);
                 if (edge == null)
@@ -239,6 +241,8 @@ namespace Polygon
                 }
                 catch
                 {
+                    // NaN was inputed
+                    MessageBox.Show("Inputed value isn't proper lenght", "Wrong input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
@@ -254,14 +258,14 @@ namespace Polygon
                 var edge = polygon.CheckEdge(p);
                 if (edge == null)
                     continue;
-                if(firstEdge == null)
+                if (firstEdge == null)
                 {
                     firstEdge = edge;
                     Redraw();
                     return;
                 }
 
-                if(!relations.AddParallelRelation(firstEdge, edge))
+                if (!relations.AddParallelRelation(firstEdge, edge))
                 {
                     MessageBox.Show("You can't make neighboring edges parallel", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
@@ -286,15 +290,16 @@ namespace Polygon
 
         private void DeleteVertex(Point p)
         {
-            foreach(var polygon in polygons)
+            foreach (var polygon in polygons)
             {
                 var v = polygon.CheckVertex(p);
                 if (v == null)
                     continue;
 
                 relations.DeleteRelations(v);
-                if(polygon.Delete(v))
+                if (polygon.Delete(v))
                 {
+                    // if returned value is true then polygon is triangle - smallest polygon
                     var result = MessageBox.Show("Are you sure you want to delete whole polygon?", "Polygon delete", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
 
                     if (result != DialogResult.OK)
@@ -355,7 +360,8 @@ namespace Polygon
 
         private void contextMenu_Closed(object sender, ToolStripDropDownClosedEventArgs e)
         {
-            foreach(ToolStripItem item in contextMenu.Items)
+            // reset context menu items
+            foreach (ToolStripItem item in contextMenu.Items)
             {
                 item.Enabled = false;
             }
@@ -367,6 +373,8 @@ namespace Polygon
         {
             if (workType != WorkType.Edit)
                 return;
+
+            //if we are not creating polygon enable proper context menu items
             ContextMenuPosition = canvas.PointToClient(Cursor.Position);
             foreach (var polygon in polygons)
             {
@@ -382,11 +390,11 @@ namespace Polygon
 
                 //check if edge was clicked
                 temp = polygon.CheckEdge((Point)ContextMenuPosition);
-                if(temp != null)
+                if (temp != null)
                 {
                     clickable = temp;
                     addSizeRelationToolStripMenuItem.Enabled = true;
-                    if(firstEdge == null)
+                    if (firstEdge == null)
                     {
                         addParallelRelationToolStripMenuItem.Enabled = true;
                     }

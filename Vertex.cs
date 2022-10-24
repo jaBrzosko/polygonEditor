@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Polygon
+﻿namespace Polygon
 {
-    internal class Vertex: IMovable
+    internal class Vertex : IMovable
     {
         public double X { get; private set; }
         public double Y { get; private set; }
 
         private List<Relation> _relations;
-        private bool wasMoved;
+        private bool wasMoved; // we don't move the same vertex twice in DFS relation search
 
         public Vertex(int x, int y)
         {
@@ -39,23 +33,25 @@ namespace Polygon
         {
             if (wasMoved)
                 return;
-            wasMoved = true;
+            wasMoved = true; // prevents recursion
             X += dx;
             Y += dy;
 
-            foreach (var rel in _relations.Where(x => !x.WasApplied))
+            foreach (var rel in _relations)
             {
-                if (rel.WasApplied)
+                if (rel.WasApplied) // we don't want to calculate relation twice
                     continue;
                 rel.ApplyRelation(this, dx, dy);
             }
             wasMoved = false;
         }
 
+        // Moving edge as two separate vertices wasn't working because it was moving edge twice
         public void MoveByEdge(double dx, double dy, Vertex v)
         {
             wasMoved = true;
             v.wasMoved = true;
+
             X += dx;
             Y += dy;
             v.X += dx;

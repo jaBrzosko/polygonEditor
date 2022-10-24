@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 namespace Polygon
 {
@@ -11,7 +7,8 @@ namespace Polygon
         private Dictionary<Edge, List<Relation>> _relations;
         private Font _font;
         private Brush _brush;
-        private int parallelRelations;
+        private int parallelRelations; // we count relation numbers
+
 
         public RelationCollection()
         {
@@ -23,8 +20,8 @@ namespace Polygon
 
         public void AddSizeRelation(Edge e, double length)
         {
-
-            if(_relations.Count(x => x.Key.Equals(e)) == 0)
+            // check if Edge is already registered
+            if (_relations.Count(x => x.Key.Equals(e)) == 0)
             {
                 _relations.Add(e, new List<Relation>());
             }
@@ -37,10 +34,11 @@ namespace Polygon
                 if (relation is SizeRelation)
                 {
                     rel = (SizeRelation)relation;
+                    // update the length rather than creating new size relation
                     rel.UpdateLength(length);
                 }
             }
-            if(rel == null)
+            if (rel == null) // new relation needs to be created
             {
                 rel = new SizeRelation(e, length);
                 _relations[e].Add(rel);
@@ -76,6 +74,7 @@ namespace Polygon
             return true;
         }
 
+        // it is used for context menu
         public void DeleteRelations(Edge e, string text)
         {
             foreach (var edge in _relations.Keys)
@@ -94,13 +93,14 @@ namespace Polygon
             CorrectRelations();
         }
 
+        // delete all relations that include Edge e and correspodning parallels
         public void DeleteRelations(Edge e)
         {
             foreach (var edge in _relations.Keys)
             {
                 if (edge.Equals(e))
                 {
-                    foreach(var rel in _relations[edge])
+                    foreach (var rel in _relations[edge])
                     {
                         rel.Dismantle();
                     }
@@ -112,11 +112,11 @@ namespace Polygon
 
         public void DeleteRelations(Vertex v)
         {
-            foreach(var edge in _relations.Keys)
+            foreach (var edge in _relations.Keys)
             {
-                if(edge.Contains(v))
+                if (edge.Contains(v))
                 {
-                    foreach(var rel in _relations[edge])
+                    foreach (var rel in _relations[edge])
                     {
                         rel.Dismantle();
                     }
@@ -126,6 +126,8 @@ namespace Polygon
             CorrectRelations();
         }
 
+
+        // if parallel relation was deleted it is flaged as WasDismantled and needs to be deleted
         private void CorrectRelations()
         {
             foreach (var edge in _relations.Keys)
@@ -136,7 +138,7 @@ namespace Polygon
 
         public void DrawRelations(Graphics g)
         {
-            foreach(var edge in _relations.Keys)
+            foreach (var edge in _relations.Keys)
             {
                 // draw icon in the middle of the edge
                 double cx = (edge.U.X + edge.V.X) / 2;
@@ -144,13 +146,14 @@ namespace Polygon
 
                 StringBuilder icon = new StringBuilder();
 
-                foreach(var rel in _relations[edge])
+                foreach (var rel in _relations[edge])
                 {
                     icon.Append(rel.GetIcon());
                     icon.Append(" ");
                 }
 
-                //https://social.msdn.microsoft.com/Forums/windows/en-US/146f5b15-62a0-4b9e-ba22-7fcebd4df80b/drawstring-with-solid-background?forum=winforms
+                // filling background
+                // https://social.msdn.microsoft.com/Forums/windows/en-US/146f5b15-62a0-4b9e-ba22-7fcebd4df80b/drawstring-with-solid-background?forum=winforms
 
                 string text = icon.ToString();
 
