@@ -22,15 +22,13 @@
 
         public void Draw(Graphics g, SolidBrush brush, Pen pen, int radius, bool drawBersenham, Bitmap image)
         {
-            Point point = U.GetPoint();
-            g.FillEllipse(brush, point.X - radius, point.Y - radius, 2 * radius, 2 * radius);
             if (drawBersenham)
             {
-                LineDrawer.DrawBersenhamLine(image, point, V.GetPoint(), brush.Color);
+                LineDrawer.DrawBersenhamLine(image, U.GetPoint(), V.GetPoint(), brush.Color);
             }
             else
             {
-                LineDrawer.DrawLine(g, pen, point, V.GetPoint());
+                LineDrawer.DrawLine(g, pen, U.GetPoint(), V.GetPoint());
             }
         }
 

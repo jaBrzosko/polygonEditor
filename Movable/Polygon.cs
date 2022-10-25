@@ -151,6 +151,11 @@
             {
                 edge.Draw(g, brush, pen, radius, drawBersenham, image);
             }
+            foreach(var vertex in vertices)
+            {
+                Point point = vertex.GetPoint();
+                g.FillEllipse(brush, point.X - radius, point.Y - radius, 2 * radius, 2 * radius);
+            }
         }
 
         // the difference between this and DrawPolygon() is that we don't draw edge between first and last vertices
@@ -160,7 +165,11 @@
             {
                 edge.Draw(g, brush, pen, radius, drawBersenham, image);
             }
-            g.FillEllipse(brush, (int)vertices.Last().X - radius, (int)vertices.Last().Y - radius, 2 * radius, 2 * radius);
+            foreach (var vertex in vertices)
+            {
+                Point point = vertex.GetPoint();
+                g.FillEllipse(brush, point.X - radius, point.Y - radius, 2 * radius, 2 * radius);
+            }
         }
 
         public void Move(double dx, double dy)
@@ -186,6 +195,7 @@
                         Edge newEdge = new Edge(newVertex, edge.V);
                         edges.Insert(i + 1, newEdge);
                         edge.V = newVertex;
+                        break;
                     }
                 }
                 vertices.AddAfter(lln, new LinkedListNode<Vertex>(newVertex));
@@ -217,17 +227,38 @@
                 {
                     Vertex v1 = edgesWithV[0].U.Equals(v) ? edgesWithV[0].V : edgesWithV[0].U;
                     Vertex v2 = edgesWithV[1].U.Equals(v) ? edgesWithV[1].V : edgesWithV[1].U;
-                    Edge newEdge = vertices.Last().Equals(v) || vertices.First().Equals(v) ? new Edge(v2, v1) : new Edge(v1, v2);
+                    int v1Index = GetVertexIndex(v1);
+                    int v2Index = GetVertexIndex(v2);
+                    Edge newEdge;
+                    if ((v1Index + 2) % vertices.Count == v2Index && (v2Index != vertices.Count - 1 || v1Index != 1))
+                        newEdge = new Edge(v1, v2);
+                    else
+                        newEdge = new Edge(v2, v1);
+                    //Edge newEdge = vertices.First().Equals(v1) || vertices.Last().Equals(v) ? new Edge(v2, v1) : new Edge(v1, v2);
                     int index = edges.FindIndex(e => e.Equals(edgesWithV[0]));
                     edges.Insert(index, newEdge);
                     edges.Remove(edgesWithV[0]);
                     edges.Remove(edgesWithV[1]);
                 }
+
                 vertices.Remove(v);
                 return false;
             }
 
             return true;
+        }
+
+        // help method
+        private int GetVertexIndex(Vertex v)
+        {
+            int i = 0;
+            foreach(var vertex in vertices)
+            {
+                if (vertex.Equals(v))
+                    return i;
+                i++;
+            }
+            return -1;
         }
 
         // when user decides to delete polygon it has to be dismantled so all relations are properly deleted
