@@ -1,10 +1,10 @@
-=== Instrukcja ===
+﻿=== Instrukcja ===
 
-Edytor pracuje w dw�ch trybach:
+Edytor pracuje w dwóch trybach:
 - Edycji
-- Dodawania wielokatow
+- Dodawania wielokątów
 
-W trybie edycji mozliwe jest przesuwanie wierzcholkow, krawedzi oraz calych wielokatow.
+W trybie edycji możliwe jest przesuwanie wierzchołków, krawędzi oraz całych wielokątów.
 Pozostale akcje znajduja sie pod prawym przyciskiem myszy po nacisnieciu na krawedz (lub wierzcholek kiedy chcemy go usunac):
 - Kiedy chcemy dodac wierzcholek doda sie on w miejscu gdzie wlasnie znajduje sie nasz kursor nad krawedzia
 - Dodajac ograniczenie na rozmiar wyskoczy okienko dialogowe, ktore poprosi o podanie rozmiaru
