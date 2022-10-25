@@ -93,7 +93,7 @@
             double dnx, dny;
             //check if A or B is 0
             // A == 0 => By + C = 0, line is vertical
-            if(B == 0)
+            if(A == 0)
             {
                 dnx = 0;
                 dny = stationary.Y - toBeMoved.Y;
