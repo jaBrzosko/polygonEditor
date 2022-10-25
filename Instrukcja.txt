@@ -5,15 +5,15 @@ Edytor pracuje w dwóch trybach:
 - Dodawania wielokątów
 
 W trybie edycji możliwe jest przesuwanie wierzchołków, krawędzi oraz całych wielokątów.
-Pozostale akcje znajduja sie pod prawym przyciskiem myszy po nacisnieciu na krawedz (lub wierzcholek kiedy chcemy go usunac):
-- Kiedy chcemy dodac wierzcholek doda sie on w miejscu gdzie wlasnie znajduje sie nasz kursor nad krawedzia
-- Dodajac ograniczenie na rozmiar wyskoczy okienko dialogowe, ktore poprosi o podanie rozmiaru
-- Dodajac relacje rownoleglosci pierwsza krawedz w parze zostanie pomalowana na pomaranczowo. Nastepnie trzeba kliknac lewym przyciskiem, aby wybrac druga krawedz do tej relacji
-- Mozna usunac dowolna relacje w ktorej znajduje sie dana krawedz
+Pozostałe akcje znajdują się pod prawym przyciskiem myszy po naciśnięciu na krawedź (lub wierzchołek kiedy chcemy go usunąć):
+- Kiedy chcemy dodać wierzchołek doda się on w miejscu gdzie właśnie znajduje się nasz kursor nad krawedzią
+- Dodając ograniczenie na rozmiar wyskoczy okienko dialogowe, które poprosi o podanie rozmiaru
+- Dodając relacje rownoległości pierwsza krawedź w parze zostanie pomalowana na pomarańczowo. Następnie trzeba kliknać lewym przyciskiem, aby wybrać drugą krawedź do tej relacji
+- Można usunąć dowolną relację, w której znajduje sie dana krawedź
 
 == Opis algorytmu relacji ==
-Po zastosowaniu przesuniecia na jakims wierzcholku ten probuje poprawic relacje w ktorych sie znajduje. Poprawianie odbywa sie nastepujaco:
-1) Dla stalej dlugosci krawedz jest skracana lub wydluzana wzdluz tej samej prostej: Zalozmy, ze krawedz to wektor uv i przesunelismy wierzcholek u. Oznacza to, ze musimy poprawic wierzcholek v. Odpowiednio mnozac wektor uv przez zapisana w relacji dlugosc dostajemy nowa pozycje wierzcholka v. Nastepnie przesuwamy go w to miejsce
-2) Dla relacji rownoleglosci obliczamy rownania prostych dla obu krawedzi w postaci Ax + By + C = 0. Korzystajac z warunku na rownoleglosc (A_1 * B_2 - A_2 * B_1 = 0) obliczamy wartosci parametrow A i B dla krawedzi ktora poprawiamy. Poprawiamy te krawedz, ktorej wierzcholek nie zostal ruszony. Nastepnie dla nowego rownania prostej, przechodzacego przez jeden z wierzcholkow obliczamy rzut ortogonalny drugiego z nich. Znowu obliczamy delte o jaka nalezy przesunac docelowy wierzcholek
+Po zastosowaniu przesunięcia na jakimś wierzchołku ten próbuje poprawić relacje, w których się znajduje. Poprawianie odbywa sie następująco:
+1) Dla stałej długości krawędź jest skracana lub wydłużana wzdłuż tej samej prostej: Załóżmy, że krawędź to wektor uv i przesunęliśmy wierzchołek u. Oznacza to, że musimy poprawić wierzchołek v. Odpowiednio mnożąc wektor uv przez zapisaną w relacji dlugość dostajemy nowa pozycję wierzchołka v. Następnie przesuwamy go w to miejsce
+2) Dla relacji równoległosci obliczamy równania prostych dla obu krawedzi w postaci Ax + By + C = 0. Korzystając z warunku na równoległość (A_1 * B_2 - A_2 * B_1 = 0) obliczamy wartości parametrow A i B dla krawędzi którą poprawiamy. Poprawiamy tę krawędź, której wierzchołek nie został ruszony. Następnie dla nowego równania prostej, przechodzącego przez jeden z wierzchołków obliczamy rzut ortogonalny drugiego z nich. Znowu obliczamy delte o jaka należy przesunąć docelowy wierzchołek
 
-Relacje sa rozwiazywane rekurencyjnie poprzez szukanie wglab i zaznaczanie spelnionym relacjom odpowiednich flag, aby nie wpasc w nieskonczona petle
+Relacje sa rozwiązywane rekurencyjnie poprzez szukanie wgłąb i zaznaczanie spełnionym relacjom odpowiednich flag, aby nie wpaść w nieskończoną pętlę
