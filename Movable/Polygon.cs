@@ -4,6 +4,7 @@
     {
         private LinkedList<Vertex> vertices; 
         private List<Edge> edges;
+        private List<Edge> bezierEdges;
         private readonly static double deltaE = 25; // squared - we don't have to calculate root
         private readonly static double deltaV = 25; // squared
 
@@ -11,6 +12,7 @@
         {
             vertices = new LinkedList<Vertex>();
             edges = new List<Edge>();
+            bezierEdges = new List<Edge>();
         }
         public Vertex LastVertex { get { return vertices.Last(); } }
         public int Count { get { return vertices.Count; } }
@@ -43,16 +45,31 @@
         // if point p corresponds to any movable part of this polygon we return it
         public IMovable? CheckMovable(Point p)
         {
+            var bv = CheckBezierVertex(p);
+            if (bv != null)
+                return bv;
             var v = CheckVertex(p);
             if (v != null)
                 return v;
             var e = CheckEdge(p);
-            if (e != null)
+            if (e != null && !e.IsBezier)
                 return e;
             var poly = CheckPolygon(p);
             if (poly != null)
                 return poly;
 
+            return null;
+        }
+
+        public BezierVertex? CheckBezierVertex(Point p)
+        {
+            foreach(var edge in bezierEdges)
+            {
+                if (edge.v1 != null && CheckCollision(p.X, p.Y, edge.v1))
+                    return edge.v1;
+                if (edge.v2 != null && CheckCollision(p.X, p.Y, edge.v2))
+                    return edge.v2;
+            }
             return null;
         }
 
@@ -136,6 +153,14 @@
             }
             return (v.X - x) * (v.X - x) + (v.Y - y) * (v.Y - y) < deltaV;
         }
+        private bool CheckCollision(int x, int y, BezierVertex v)
+        {
+            if (vertices.Count < 2)
+            {
+                return false;
+            }
+            return (v.X - x) * (v.X - x) + (v.Y - y) * (v.Y - y) < deltaV;
+        }
 
         private bool CheckIfEnds(int x, int y)
         {
@@ -170,6 +195,12 @@
                 Point point = vertex.GetPoint();
                 g.FillEllipse(brush, point.X - radius, point.Y - radius, 2 * radius, 2 * radius);
             }
+        }
+
+        public void AddBezierToEdge(Edge e)
+        {
+            e.BecomeBezier();
+            bezierEdges.Add(e);
         }
 
         public void Move(double dx, double dy)
@@ -239,6 +270,7 @@
                     edges.Insert(index, newEdge);
                     edges.Remove(edgesWithV[0]);
                     edges.Remove(edgesWithV[1]);
+                    bezierEdges.RemoveAll(e => e.Contains(v));
                 }
 
                 vertices.Remove(v);

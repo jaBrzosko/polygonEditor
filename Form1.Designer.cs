@@ -42,6 +42,7 @@
             this.addVertexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeRelationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeVertexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.useBezierToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tableLayoutPanel.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -149,10 +150,11 @@
             this.addSizeRelationToolStripMenuItem,
             this.addParallelRelationToolStripMenuItem,
             this.addVertexToolStripMenuItem,
+            this.useBezierToolStripMenuItem,
             this.removeRelationToolStripMenuItem,
             this.removeVertexToolStripMenuItem});
             this.contextMenu.Name = "contextMenu";
-            this.contextMenu.Size = new System.Drawing.Size(181, 114);
+            this.contextMenu.Size = new System.Drawing.Size(181, 158);
             this.contextMenu.Text = "Control";
             this.contextMenu.Closed += new System.Windows.Forms.ToolStripDropDownClosedEventHandler(this.contextMenu_Closed);
             this.contextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenu_Opening);
@@ -197,6 +199,14 @@
             this.removeVertexToolStripMenuItem.Text = "Remove vertex";
             this.removeVertexToolStripMenuItem.Click += new System.EventHandler(this.removeVertexToolStripMenuItem_Click);
             // 
+            // useBezierToolStripMenuItem
+            // 
+            this.useBezierToolStripMenuItem.Enabled = false;
+            this.useBezierToolStripMenuItem.Name = "useBezierToolStripMenuItem";
+            this.useBezierToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.useBezierToolStripMenuItem.Text = "Use Bezier";
+            this.useBezierToolStripMenuItem.Click += new System.EventHandler(this.useBezierToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -231,5 +241,6 @@
         private ToolStripMenuItem removeVertexToolStripMenuItem;
         private Button PolygonButton;
         private ToolStripMenuItem removeRelationToolStripMenuItem;
+        private ToolStripMenuItem useBezierToolStripMenuItem;
     }
 }

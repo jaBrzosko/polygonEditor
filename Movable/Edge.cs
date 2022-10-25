@@ -5,6 +5,9 @@
     {
         public Vertex U { get; set; }
         public Vertex V { get; set; }
+        public bool IsBezier { get; set; }
+        public BezierVertex? v1 { get; set; }
+        public BezierVertex? v2 { get; set; }
 
         public double Length
         {
@@ -20,8 +23,28 @@
             this.V = v;
         }
 
+        public void BecomeBezier()
+        {
+            IsBezier = true;
+            double dx = V.X - U.X;
+            double dy = V.Y - U.Y;
+            v1 = new BezierVertex(dx / 3 + U.X, dy / 3 + U.Y);
+            v2 = new BezierVertex(2 * dx / 3 + U.X, 2 * dy / 3 + U.Y);
+            U.AddBezierPoint(v1);
+            V.AddBezierPoint(v2);
+        }
+
         public void Draw(Graphics g, SolidBrush brush, Pen pen, int radius, bool drawBersenham, Bitmap image)
         {
+            if(IsBezier)
+            {
+                Point v1P = v1.GetPoint(), v2P = v2.GetPoint();
+                LineDrawer.DrawBezier(g, pen, U.GetPoint(), v1P, v2P, V.GetPoint());
+                using Brush bezierBrush = new SolidBrush(Color.DarkGreen);
+                g.FillRectangle(bezierBrush, v1P.X - radius, v1P.Y - radius, 2 * radius, 2 * radius);
+                g.FillRectangle(bezierBrush, v2P.X - radius, v2P.Y - radius, 2 * radius, 2 * radius);
+                return;
+            }
             if (drawBersenham)
             {
                 LineDrawer.DrawBersenhamLine(image, U.GetPoint(), V.GetPoint(), brush.Color);

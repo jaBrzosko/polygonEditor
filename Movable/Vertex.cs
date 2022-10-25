@@ -5,6 +5,8 @@
         public double X { get; private set; }
         public double Y { get; private set; }
 
+        private List<BezierVertex> bezierVertices;
+
         private List<Relation> _relations;
         private bool wasMoved; // we don't move the same vertex twice in DFS relation search
 
@@ -13,6 +15,7 @@
             X = x;
             Y = y;
             _relations = new List<Relation>();
+            bezierVertices = new List<BezierVertex>();
             wasMoved = false;
         }
 
@@ -21,12 +24,20 @@
             return new Point((int)X, (int)Y);
         }
 
+        public void AddBezierPoint(BezierVertex bv)
+        {
+            bezierVertices.Add(bv);
+        }
 
         // if user is moving whole polygon there is no need to check relations
         public void MoveByPolygon(double dx, double dy)
         {
             X += dx;
             Y += dy;
+            foreach(var bv in bezierVertices)
+            {
+                bv.Move(dx, dy);
+            }
         }
 
         public void Move(double dx, double dy)
@@ -36,6 +47,11 @@
             wasMoved = true; // prevents recursion
             X += dx;
             Y += dy;
+
+            foreach (var bv in bezierVertices)
+            {
+                bv.Move(dx, dy);
+            }
 
             foreach (var rel in _relations)
             {
@@ -56,6 +72,14 @@
             Y += dy;
             v.X += dx;
             v.Y += dy;
+            foreach (var bv in bezierVertices)
+            {
+                bv.Move(dx, dy);
+            }
+            foreach (var bv in v.bezierVertices)
+            {
+                bv.Move(dx, dy);
+            }
             foreach (var rel in _relations.Where(x => !x.WasApplied && !x.EdgeSetCheck(this, v)))
             {
                 rel.ApplyRelation(this, dx, dy);

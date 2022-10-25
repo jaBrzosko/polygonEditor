@@ -2,6 +2,40 @@
 {
     internal class LineDrawer
     {
+        public static void DrawBezier(Graphics g, Pen pen, Point v0, Point v1, Point v2, Point v3)
+        {
+
+            //draw help lines
+            Pen dashPen = new Pen(Color.GreenYellow, 2);
+            dashPen.DashPattern = new float[] { 8.0F, 4.0F, 2.0F, 6.0F };
+
+            g.DrawLine(dashPen, v0, v1);
+            g.DrawLine(dashPen, v1, v2);
+            g.DrawLine(dashPen, v2, v3);
+
+            MyDrawBezier(g, pen, v0, v1, v2, v3);
+        }
+
+        public static void MyDrawBezier(Graphics g, Pen p, Point v0, Point v1, Point v2, Point v3)
+        {
+            double t0 = 0, t1 = 1;
+            double step = 0.01;
+            (double X, double Y) A0 = (v0.X, v0.Y);
+            (double X, double Y) A1 = (3 * (v1.X - v0.X), 3 * (v1.Y - v0.Y));
+            (double X, double Y) A2 = (3 * (v2.X - 2 * v1.X + v0.X), 3 * (v2.Y - 2 * v1.Y + v0.Y));
+            (double X, double Y) A3 = (v3.X - 3 * v2.X + 3 * v1.X - v0.X, v3.Y - 3 * v2.Y + 3 * v1.Y - v0.Y);
+            Point prev = v0;
+            for(double t = t0; t <= t1; t+=step)
+            {
+                double nx = t * (t * (t * A3.X + A2.X) + A1.X) + A0.X;
+                double ny = t * (t * (t * A3.Y + A2.Y) + A1.Y) + A0.Y;
+                Point newPoint = new Point((int)nx, (int)ny);
+                g.DrawLine(p, prev, newPoint);
+                prev = newPoint;
+            }
+            g.DrawLine(p, prev, v3);
+        }
+
         public static void DrawLine(Graphics g, Pen pen, Point u, Point v)
         {
             g.DrawLine(pen, u, v);

@@ -9,6 +9,7 @@ namespace Polygon
         private WorkType workType;
         private IMovable? movable;
         private IMovable? clickable;
+        private Polygon? clickablePolygon;
         private Point? LastPosition;
         private Point? ContextMenuPosition;
         private Edge? firstEdge;
@@ -358,6 +359,16 @@ namespace Polygon
             ContextMenuPosition = null;
         }
 
+        private void useBezierToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (clickable == null || clickablePolygon == null)
+                return;
+            clickablePolygon.AddBezierToEdge((Edge)clickable);
+            relations.DeleteRelations((Edge)clickable);
+            ContextMenuPosition = null;
+            Redraw();
+        }
+
         private void contextMenu_Closed(object sender, ToolStripDropDownClosedEventArgs e)
         {
             // reset context menu items
@@ -390,15 +401,17 @@ namespace Polygon
 
                 //check if edge was clicked
                 temp = polygon.CheckEdge((Point)ContextMenuPosition);
-                if (temp != null)
+                if (temp != null && !((Edge)temp).IsBezier)
                 {
                     clickable = temp;
+                    clickablePolygon = polygon;
                     addSizeRelationToolStripMenuItem.Enabled = true;
                     if (firstEdge == null)
                     {
                         addParallelRelationToolStripMenuItem.Enabled = true;
                     }
                     addVertexToolStripMenuItem.Enabled = true;
+                    useBezierToolStripMenuItem.Enabled = true;
 
                     // check for all relations on the edge
                     var rels = relations.GetRelation((Edge)temp);
