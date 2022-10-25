@@ -3,12 +3,14 @@
     internal class Polygon : IMovable
     {
         private LinkedList<Vertex> vertices; 
+        private List<Edge> edges;
         private readonly static double deltaE = 25; // squared - we don't have to calculate root
         private readonly static double deltaV = 25; // squared
 
         public Polygon()
         {
             vertices = new LinkedList<Vertex>();
+            edges = new List<Edge>();
         }
         public Vertex LastVertex { get { return vertices.Last(); } }
         public int Count { get { return vertices.Count; } }
@@ -16,12 +18,22 @@
         public bool AddPoint(int x, int y)
         {
             Vertex temp = new Vertex(x, y);
+            
 
             // we want to stop creating polygon when last vertex is first
             if (CheckIfEnds(x, y))
             {
+                Edge tempEdge = new Edge(vertices.Last(), vertices.First());
+                edges.Add(tempEdge);
+
                 // this prevents creating line
                 return vertices.Count > 2;
+            }
+
+            if (vertices.Count > 0)
+            {
+                Edge tempEdge = new Edge(vertices.Last(), temp);
+                edges.Add(tempEdge);
             }
 
             vertices.AddLast(temp);
@@ -63,7 +75,13 @@
                 int j = (i + 1) % vertices.Count;
                 double result = GetDistance(p.X, p.Y, temp[i].X, temp[i].Y, temp[j].X, temp[j].Y);
                 if (result < deltaE)
-                    return new Edge(temp[i], temp[j]);
+                {
+                    foreach (var edge in edges)
+                    {
+                        if (edge.Contains(temp[i]) && edge.Contains(temp[j]))
+                            return edge;
+                    }
+                }
             }
             return null;
         }
@@ -129,42 +147,20 @@
 
         public void DrawPolygon(Graphics g, SolidBrush brush, Pen pen, int radius, bool drawBersenham, Bitmap image)
         {
-            Point prev = vertices.Last().GetPoint();
-            foreach (Vertex v in vertices)
+            foreach (var edge in edges)
             {
-                Point point = v.GetPoint();
-                g.FillEllipse(brush, point.X - radius, point.Y - radius, 2 * radius, 2 * radius);
-                if (drawBersenham)
-                {
-                    LineDrawer.DrawBersenhamLine(image, prev, point, brush.Color);
-                }
-                else
-                {
-                    LineDrawer.DrawLine(g, pen, point, prev);
-                }
-                prev = point;
+                edge.Draw(g, brush, pen, radius, drawBersenham, image);
             }
         }
 
         // the difference between this and DrawPolygon() is that we don't draw edge between first and last vertices
         public void DrawPolygonInCreation(Graphics g, SolidBrush brush, Pen pen, int radius, bool drawBersenham, Bitmap image)
         {
-            Point prev = vertices.First().GetPoint();
-            g.FillEllipse(brush, prev.X - radius, prev.Y - radius, 2 * radius, 2 * radius);
-            foreach (Vertex v in vertices.Skip(1))
+            foreach(var edge in edges)
             {
-                Point point = v.GetPoint();
-                g.FillEllipse(brush, point.X - radius, point.Y - radius, 2 * radius, 2 * radius);
-                if (drawBersenham)
-                {
-                    LineDrawer.DrawBersenhamLine(image, prev, point, brush.Color);
-                }
-                else
-                {
-                    LineDrawer.DrawLine(g, pen, point, prev);
-                }
-                prev = point;
+                edge.Draw(g, brush, pen, radius, drawBersenham, image);
             }
+            g.FillEllipse(brush, (int)vertices.Last().X - radius, (int)vertices.Last().Y - radius, 2 * radius, 2 * radius);
         }
 
         public void Move(double dx, double dy)
@@ -178,23 +174,55 @@
         public void Insert(Edge edge, Point p)
         {
             var lln = vertices.Find(edge.U);
+            Vertex newVertex = new Vertex(p.X, p.Y);
             if (lln == null)
                 return;
             if ((lln.Next == null && vertices.First != null && vertices.First.Value.Equals(edge.V)) || (lln.Next != null && lln.Next.Value.Equals(edge.V)))
             {
-                vertices.AddAfter(lln, new LinkedListNode<Vertex>(new Vertex(p.X, p.Y)));
+                for(int i = 0; i < edges.Count; i++)
+                {
+                    if(edges[i].Equals(edge))
+                    {
+                        Edge newEdge = new Edge(newVertex, edge.V);
+                        edges.Insert(i + 1, newEdge);
+                        edge.V = newVertex;
+                    }
+                }
+                vertices.AddAfter(lln, new LinkedListNode<Vertex>(newVertex));
                 return;
             }
             lln = vertices.Find(edge.V);
             if (lln == null)
                 return;
-            vertices.AddAfter(lln, new LinkedListNode<Vertex>(new Vertex(p.X, p.Y)));
+            
+            for (int i = 0; i < edges.Count; i++)
+            {
+                if (edge.Equals(edge))
+                {
+                    Edge newEdge = new Edge(newVertex, edge.V);
+                    edges.Insert(i + 1, newEdge);
+                    edge.V = newVertex;
+                    break;
+                }
+            }
+            vertices.AddAfter(lln, new LinkedListNode<Vertex>(newVertex));
         }
 
         public bool Delete(Vertex v)
         {
             if (vertices.Count > 3)
             {
+                var edgesWithV = edges.FindAll(e => e.Contains(v));
+                if(edgesWithV.Count == 2)
+                {
+                    Vertex v1 = edgesWithV[0].U.Equals(v) ? edgesWithV[0].V : edgesWithV[0].U;
+                    Vertex v2 = edgesWithV[1].U.Equals(v) ? edgesWithV[1].V : edgesWithV[1].U;
+                    Edge newEdge = vertices.Last().Equals(v) || vertices.First().Equals(v) ? new Edge(v2, v1) : new Edge(v1, v2);
+                    int index = edges.FindIndex(e => e.Equals(edgesWithV[0]));
+                    edges.Insert(index, newEdge);
+                    edges.Remove(edgesWithV[0]);
+                    edges.Remove(edgesWithV[1]);
+                }
                 vertices.Remove(v);
                 return false;
             }

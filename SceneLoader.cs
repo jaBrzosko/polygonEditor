@@ -12,7 +12,7 @@
             Point p12 = new Point(250, 200);
             Point p13 = new Point(170, 200);
 
-            Point[] points1 = new Point[] { p11, p12, p13 };
+            Point[] points1 = new Point[] { p11, p12, p13, p11 };
 
             foreach (var point in points1)
             {
@@ -30,7 +30,7 @@
             Point p23 = new Point(650, 300);
             Point p24 = new Point(600, 200);
 
-            Point[] points2 = new Point[] { p21, p22, p23, p24 };
+            Point[] points2 = new Point[] { p21, p22, p23, p24, p21 };
 
             foreach (var point in points2)
             {
@@ -52,7 +52,7 @@
             Point p37 = new Point(210, 390);
             Point p38 = new Point(140, 280);
 
-            Point[] points3 = new Point[] { p31, p32, p33, p34, p35, p36, p37, p38 };
+            Point[] points3 = new Point[] { p31, p32, p33, p34, p35, p36, p37, p38, p31 };
 
             foreach (var point in points3)
             {

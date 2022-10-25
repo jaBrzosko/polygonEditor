@@ -3,8 +3,8 @@
     // Edge is more of a container for two vertices. There is no guarantee two vertices will always be in the same Edge class
     internal class Edge : IMovable
     {
-        public Vertex U { get; private set; }
-        public Vertex V { get; private set; }
+        public Vertex U { get; set; }
+        public Vertex V { get; set; }
 
         public double Length
         {
@@ -18,6 +18,20 @@
         {
             this.U = u;
             this.V = v;
+        }
+
+        public void Draw(Graphics g, SolidBrush brush, Pen pen, int radius, bool drawBersenham, Bitmap image)
+        {
+            Point point = U.GetPoint();
+            g.FillEllipse(brush, point.X - radius, point.Y - radius, 2 * radius, 2 * radius);
+            if (drawBersenham)
+            {
+                LineDrawer.DrawBersenhamLine(image, point, V.GetPoint(), brush.Color);
+            }
+            else
+            {
+                LineDrawer.DrawLine(g, pen, point, V.GetPoint());
+            }
         }
 
         public void Move(double dx, double dy)
